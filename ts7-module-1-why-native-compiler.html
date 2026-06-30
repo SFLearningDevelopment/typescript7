@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <!-- ============================================================================
      SF KNOWLEDGE HUB — TypeScript 7 — MODULE 1
-     Why TypeScript 7 Exists (the native compiler)
+     Why TypeScript 7 Exists + installing & using the 7.0 RC
      moduleKey (EXAMPLE_ID): ts7-module-1-why-native-compiler
      courseId  (CP_COURSE_ID): Nr2nA1nxBRaFA4fwzA36
      Completion gated on the "Mark module as complete" checkbox (complete===true).
+     Tabs: Overview / Install / Use / Side-by-Side / Check your knowledge.
      ============================================================================ -->
 <html lang="en">
 <head>
@@ -29,7 +30,15 @@
   .eyebrow{font-family:'Source Code Pro',monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--blue)}
   .tags{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
   .tag{font-family:'Source Code Pro',monospace;font-size:12px;background:#e3edf9;color:var(--blue-dark);padding:5px 10px;border-radius:14px}
-  /* Expandable concept panels — the three ideas of Module 1 */
+  /* Tabs */
+  .tabbar{display:flex;flex-wrap:wrap;gap:4px;border-bottom:2px solid var(--border);margin:22px 0 0}
+  .tabbtn{appearance:none;border:none;background:none;font-family:inherit;font-size:15px;font-weight:600;color:var(--muted);padding:11px 16px;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px}
+  .tabbtn:hover{color:var(--blue)}
+  .tabbtn.active{color:var(--blue-dark);border-bottom-color:var(--blue)}
+  .tabpanel{display:none}
+  .tabpanel.active{display:block;animation:fade .18s ease}
+  @keyframes fade{from{opacity:.4}to{opacity:1}}
+  /* Concept panels */
   .concepts{margin:18px 0}
   .concept{border:1px solid var(--border);border-radius:12px;margin:10px 0;overflow:hidden;background:var(--card)}
   .concept summary{cursor:pointer;padding:16px 18px;list-style:none;display:flex;align-items:center;gap:12px}
@@ -46,6 +55,12 @@
   .card p{margin:0 0 12px}
   .card p:last-child{margin-bottom:0}
   code{font-family:'Source Code Pro',monospace;font-size:.92em;background:#eef3f9;padding:2px 6px;border-radius:5px}
+  pre{background:#0f2233;color:#e6edf3;border-radius:10px;padding:16px 18px;overflow-x:auto;font-family:'Source Code Pro',monospace;font-size:13.5px;line-height:1.55;margin:14px 0}
+  pre code{background:none;color:inherit;padding:0;font-size:inherit}
+  .cmt{color:#7d97ad}
+  .note{border-left:4px solid var(--blue);background:#f4f8fd;border-radius:0 8px 8px 0;padding:12px 16px;margin:14px 0;font-size:14.5px}
+  .note.warn{border-left-color:#d08a1e;background:#fdf7ec}
+  .note strong{color:var(--blue-dark)}
   .primer{border:1px solid var(--border);border-radius:12px;margin:18px 0;overflow:hidden}
   .primer summary{cursor:pointer;padding:14px 18px;background:#f4f8fd;font-weight:600;color:var(--blue-dark);list-style:none}
   .primer summary::-webkit-details-marker{display:none}
@@ -90,93 +105,257 @@
     <span class="tag">Go port</span>
   </div>
 
-  <p style="color:var(--muted);margin:14px 0 4px">Most TypeScript releases add or refine type-system features. TypeScript 7 is different in kind: the language barely moves, while the thing that runs it was replaced. Three ideas explain what that means — open each one.</p>
-
-  <div class="concepts">
-
-    <details class="concept" open>
-      <summary>
-        <span class="chip">native compiler</span>
-        <span class="headline">A new engine, not a new dialect</span>
-        <span class="toggle">+</span>
-      </summary>
-      <div class="concept-body">
-        <p>When you adopt TypeScript 7, you are adopting a faster engine for the same language. The team rebuilt the compiler and tooling so they run as native code rather than as JavaScript, and the result is often about 10× faster than TypeScript 6.0, with substantially lower memory use.</p>
-        <p>This speed is not only a CI win. The same engine powers your editor: every hover, every "go to definition," every red squiggle is the type-checker working. On a large codebase that previously meant slow editor startup and laggy feedback. Native speed and shared-memory parallelism improve the command-line build and the editing experience at once — which is why teams piloting it reported both faster CI and a more fluid editor. How that speed is delivered is the subject of Module 2.</p>
-      </div>
-    </details>
-
-    <details class="concept">
-      <summary>
-        <span class="chip">Project Corsa</span>
-        <span class="headline">A port, not a rewrite</span>
-        <span class="toggle">+</span>
-      </summary>
-      <div class="concept-body">
-        <p>"Project Corsa" is the name of the year-long effort to move the compiler to its new foundation. The most important word is <em>port</em>, not <em>rewrite</em>. The team did not reimagine how type-checking should work; they methodically moved the existing implementation across, keeping the type-checking logic structurally the same.</p>
-        <p>That choice is the through-line of this whole course. Because the checker was ported rather than reinvented, a program that type-checks cleanly under 6.0 produces the same results under 7.0. The errors you get, the inferences the compiler draws, the types it reports on hover — those are intended to be identical. What changes is how fast you get them, and a set of default settings covered in Module 3.</p>
-      </div>
-    </details>
-
-    <details class="concept">
-      <summary>
-        <span class="chip">Go port</span>
-        <span class="headline">Why Go, and not Rust or WebAssembly</span>
-        <span class="toggle">+</span>
-      </summary>
-      <div class="concept-body">
-        <p>The new compiler is written in Go. It is reasonable to ask why Go, rather than Rust or a WebAssembly build. The honest answer the team gave was pragmatic: Go's concurrency model and memory layout lined up well with how the existing compiler was already structured, which made a faithful port feasible in about a year.</p>
-        <p>A ground-up rewrite in another language would have taken far longer and risked drifting away from the exact semantics teams depend on. Speed of porting — not squeezing out the last possible nanosecond — drove the decision. The pay-off is a compiler that is dramatically faster while still behaving like the one you already know.</p>
-      </div>
-    </details>
-
+  <!-- TAB BAR -->
+  <div class="tabbar" id="tabbar">
+    <button class="tabbtn active" data-tab="overview">Overview</button>
+    <button class="tabbtn" data-tab="install">Install the 7.0 RC</button>
+    <button class="tabbtn" data-tab="use">Using 7.0 RC</button>
+    <button class="tabbtn" data-tab="sxs">Side-by-side with 6.0</button>
+    <button class="tabbtn" data-tab="check">Check your knowledge</button>
   </div>
 
-  <details class="primer">
-    <summary>Refresh your knowledge?</summary>
-    <div class="primer-body">
-      <p><strong>What does a TypeScript compiler actually do?</strong> If "the compiler was ported" is to mean anything, it helps to know what the compiler's job is. Three stages matter here.</p>
-      <p><strong>1. Parse.</strong> The compiler reads your <code>.ts</code> source text and turns it into a structured tree (an abstract syntax tree, or AST) that represents the code's shape — which things are functions, calls, types, and so on. This is purely about understanding structure; no type rules are applied yet.</p>
-      <p><strong>2. Type-check.</strong> The compiler walks that tree and applies TypeScript's type rules: it infers types where you did not write them, checks that the types you did write are consistent, and produces the errors you see. This stage is the heart of "TypeScript" as a value-add over plain JavaScript — and it is the stage the team deliberately kept structurally identical when porting to Go.</p>
-      <p><strong>3. Emit.</strong> The compiler strips the types away and writes out plain JavaScript that any runtime can execute, optionally with declaration files (<code>.d.ts</code>) describing your public types. TypeScript's types do not exist at runtime; emit is where they are erased.</p>
-      <p>Holding these three stages in mind makes the central claim of TypeScript 7 precise: the <em>type-check</em> stage behaves the same as before, the <em>emit</em> produces the same JavaScript, and what the Go port changed is how fast all three run and how much they parallelise. You can verify this yourself: compile a project with both compilers and diff the emitted JavaScript — it should match.</p>
-    </div>
-  </details>
+  <!-- TAB: OVERVIEW ========================================================= -->
+  <div class="tabpanel active" id="tab-overview">
+    <p style="color:var(--muted);margin:18px 0 4px">Most TypeScript releases add or refine type-system features. TypeScript 7 is different in kind: the language barely moves, while the thing that runs it was replaced. Three ideas explain what that means — open each one.</p>
 
-  <div id="questionsWrap" class="card">
-    <div class="eyebrow">Check your understanding</div>
+    <div class="concepts">
+      <details class="concept" open>
+        <summary>
+          <span class="chip">native compiler</span>
+          <span class="headline">A new engine, not a new dialect</span>
+          <span class="toggle">+</span>
+        </summary>
+        <div class="concept-body">
+          <p>When you adopt TypeScript 7, you are adopting a faster engine for the same language. The team rebuilt the compiler and tooling so they run as native code rather than as JavaScript, and the result is often about 10× faster than TypeScript 6.0, with substantially lower memory use.</p>
+          <p>This speed is not only a CI win. The same engine powers your editor: every hover, every "go to definition," every red squiggle is the type-checker working. On a large codebase that previously meant slow editor startup and laggy feedback. Native speed and shared-memory parallelism improve the command-line build and the editing experience at once — which is why teams piloting it reported both faster CI and a more fluid editor. How that speed is delivered is the subject of Module 2.</p>
+        </div>
+      </details>
 
-    <div class="q">
-      <div class="stem">Q1. What is the primary change introduced by TypeScript 7?</div>
-      <label class="opt"><input type="radio" name="q1" value="A">The compiler and tooling were rewritten in Go for roughly 10× faster builds, while type-checking behaviour is preserved.</label>
-      <label class="opt"><input type="radio" name="q1" value="B">A large set of new type-system features and syntax were added to the language.</label>
-      <label class="opt"><input type="radio" name="q1" value="C">TypeScript stopped compiling to JavaScript and now runs its own bytecode at runtime.</label>
-    </div>
-    <div class="q">
-      <div class="stem">Q2. The team describes the Go effort as a "port, not a rewrite." Why does that distinction matter to you as a developer?</div>
-      <label class="opt"><input type="radio" name="q2" value="A">It means the editor extension is optional and you only get speed in CI.</label>
-      <label class="opt"><input type="radio" name="q2" value="B">Because the type-checking logic was kept structurally identical, a project that checks cleanly under 6.0 should produce the same results under 7.0.</label>
-      <label class="opt"><input type="radio" name="q2" value="C">It means your existing TypeScript source must be manually rewritten in Go.</label>
-    </div>
-    <div class="q">
-      <div class="stem">Q3. Why does a faster compiler improve the editing experience, not just CI build times?</div>
-      <label class="opt"><input type="radio" name="q3" value="A">The editor uses a separate, unrelated engine that was sped up independently.</label>
-      <label class="opt"><input type="radio" name="q3" value="B">Faster CI indirectly frees up the editor by reducing background network traffic.</label>
-      <label class="opt"><input type="radio" name="q3" value="C">The same type-checker that builds your code also powers editor features like hover, go-to-definition, and error reporting, so speeding it up speeds up both.</label>
+      <details class="concept">
+        <summary>
+          <span class="chip">Project Corsa</span>
+          <span class="headline">A port, not a rewrite</span>
+          <span class="toggle">+</span>
+        </summary>
+        <div class="concept-body">
+          <p>"Project Corsa" is the name of the year-long effort to move the compiler to its new foundation. The most important word is <em>port</em>, not <em>rewrite</em>. The team did not reimagine how type-checking should work; they methodically moved the existing implementation across, keeping the type-checking logic structurally the same.</p>
+          <p>That choice is the through-line of this whole course. Because the checker was ported rather than reinvented, a program that type-checks cleanly under 6.0 produces the same results under 7.0. As a measure of how complete this is: of roughly 20,000 compiler test cases, about 6,000 produce at least one error under 6.0, and 7.0 reproduces an error in all but a small handful — and those exceptions are known incomplete work or deliberate, documented changes. The errors, inferences, and hover types are intended to be identical. What changes is how fast you get them, plus a set of default settings covered in Module 3.</p>
+        </div>
+      </details>
+
+      <details class="concept">
+        <summary>
+          <span class="chip">Go port</span>
+          <span class="headline">Why Go, and not Rust or WebAssembly</span>
+          <span class="toggle">+</span>
+        </summary>
+        <div class="concept-body">
+          <p>The new compiler is written in Go. It is reasonable to ask why Go, rather than Rust or a WebAssembly build. The honest answer the team gave was pragmatic: Go's concurrency model and memory layout lined up well with how the existing compiler was already structured, which made a faithful port feasible in about a year.</p>
+          <p>A ground-up rewrite in another language would have taken far longer and risked drifting away from the exact semantics teams depend on. Speed of porting — not squeezing out the last possible nanosecond — drove the decision. The pay-off is a compiler that is dramatically faster while still behaving like the one you already know.</p>
+        </div>
+      </details>
     </div>
 
-    <button class="submit-btn" id="submitAnswersBtn" disabled>Submit answers</button>
-    <div class="submit-note" id="submitNote">Select an answer for each question to submit.</div>
+    <!-- EXPANDED PRIMER -->
+    <details class="primer">
+      <summary>Refresh your knowledge?</summary>
+      <div class="primer-body">
+        <p><strong>What does a TypeScript compiler actually do?</strong> If "the compiler was ported" is to mean anything, it helps to recall the compiler's job. It runs in three stages. <strong>Parse:</strong> it reads your <code>.ts</code> source and builds a structured tree (an abstract syntax tree) representing the code's shape. <strong>Type-check:</strong> it walks that tree, infers types you didn't write, and verifies the types you did — this is the stage kept structurally identical in the Go port. <strong>Emit:</strong> it strips the types away and writes plain JavaScript (types do not exist at runtime). The TypeScript 7 claim is precise in these terms: the type-check stage behaves the same, emit produces the same JavaScript, and the port changed only how fast all three run.</p>
+
+        <p><strong>Why is TypeScript considered a robust language? A short refresher on the features that earn that reputation:</strong></p>
+
+        <p><strong>Static type safety.</strong> TypeScript checks types at compile time, before your code ever runs. A function that expects a <code>number</code> cannot silently be handed a <code>string</code>; the mismatch is caught at your desk, not in production. This is the central value-add over plain JavaScript, and it is exactly what the native compiler makes faster without changing.</p>
+
+        <p><strong>Type inference.</strong> You rarely have to annotate everything. Write <code>const total = 3 + 4</code> and TypeScript infers <code>total: number</code> on its own. Inference keeps the safety while keeping the code close to the JavaScript you'd write anyway.</p>
+
+        <p><strong>Interfaces and structural typing.</strong> TypeScript types describe the <em>shape</em> of data. Two objects are compatible if their shapes match, regardless of where they came from — "if it has the right properties, it fits." This structural approach models real-world JavaScript objects naturally.</p>
+
+        <p><strong>Generics.</strong> Reusable code that preserves type information. <code>Array&lt;string&gt;</code>, <code>Promise&lt;User&gt;</code>, or your own <code>function first&lt;T&gt;(items: T[]): T</code> all keep the specific type flowing through, instead of collapsing to <code>any</code>.</p>
+
+        <p><strong>Union, literal, and narrowing.</strong> A value can be <code>"open" | "closed"</code> and nothing else; control-flow analysis then <em>narrows</em> the type as you check it (inside <code>if (x === "open")</code>, TypeScript knows <code>x</code> is <code>"open"</code>). This catches whole categories of bugs that plain JavaScript would let through.</p>
+
+        <p><strong>Iterators and iterables.</strong> TypeScript models the iteration protocol — anything with a <code>[Symbol.iterator]()</code> method that yields values — so <code>for…of</code>, spread <code>[...x]</code>, and destructuring all type-check correctly across arrays, <code>Map</code>, <code>Set</code>, generators, and your own iterable classes. Generator functions (<code>function*</code>) are typed as <code>Generator&lt;T&gt;</code>/<code>Iterator&lt;T&gt;</code>, and downlevel iteration is handled at emit. Note for this course: iterators are an established TypeScript feature, <em>not</em> new in 7.0 — the native compiler type-checks them exactly as 6.0 did. They're included here as part of what makes the language robust, not as a 7.0 feature.</p>
+
+        <p><strong>Enums, tuples, and utility types.</strong> Rounding out the toolkit: <code>enum</code> for named constant sets, fixed-length typed <code>tuples</code>, and built-in utility types like <code>Partial&lt;T&gt;</code>, <code>Pick&lt;T,K&gt;</code>, and <code>Readonly&lt;T&gt;</code> that transform existing types without rewriting them. Together these let you describe intent precisely and let the compiler hold you to it.</p>
+
+        <p>Every one of these features behaves identically under TypeScript 7. That is the point of a port: the robustness you rely on is unchanged — you simply get the compiler's answer roughly ten times faster.</p>
+      </div>
+    </details>
   </div>
 
-  <div id="submittedWrap" class="card hidden">
-    <p>Answers submitted. Review complete — mark this module as complete below.</p>
+  <!-- TAB: INSTALL ========================================================== -->
+  <div class="tabpanel" id="tab-install">
+    <div class="card">
+      <h3 style="margin-top:0">Before you install: Node.js</h3>
+      <p>The native compiler is distributed as an npm package with prebuilt platform binaries, so you need Node.js and npm available. The package requires <strong>Node.js 16.20.0 or newer</strong>; any current LTS release (Node 20 or 22) is a safe choice. Check what you have:</p>
+      <pre><code><span class="cmt"># confirm Node and npm are present</span>
+node -v   <span class="cmt"># should print v16.20.0 or higher</span>
+npm -v</code></pre>
+      <div class="note"><strong>Note.</strong> This is unrelated to Node's own "run <code>.ts</code> files directly" feature (type stripping). That feature only erases types at runtime and does no type-checking. The TypeScript 7 compiler is what actually checks your types — the two are complementary, not the same thing.</div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">Install the compiler</h3>
+      <p>During the RC period the compiler ships under the preview package name <code>@typescript/native-preview</code>. The separate package name is deliberate: it means the preview cannot collide with a <code>typescript</code> install you already have. Install it as a dev dependency in your project:</p>
+      <pre><code><span class="cmt"># per-project (recommended)</span>
+npm install -D @typescript/native-preview</code></pre>
+      <p>Or globally, if you want the command available everywhere:</p>
+      <pre><code><span class="cmt"># global</span>
+npm install -g @typescript/native-preview</code></pre>
+      <div class="note warn"><strong>The binary name depends on the build.</strong> For the <strong>TypeScript 7.0 RC and later</strong>, the command is <code>tsc</code> — the same name you already know. For <em>earlier</em> native-preview builds (the betas and nightlies), the command was <code>tsgo</code>. If <code>tsc</code> isn't found after installing a preview build, try <code>tsgo</code> — it's the same compiler under the older name. At the stable 7.0 release the compiler moves into the regular <code>typescript</code> package and the <code>@typescript/native-preview</code> name retires.</div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">Verify it works</h3>
+      <p>Confirm the install by printing the version. Using <code>npx</code> runs the project-local copy without needing a global install:</p>
+      <pre><code><span class="cmt"># RC and later</span>
+npx tsc --version
+
+<span class="cmt"># earlier preview builds used the tsgo name</span>
+npx tsgo --version</code></pre>
+      <p>For the editor, install the <strong>TypeScript Native Preview</strong> extension from the VS Code Marketplace. It updates frequently and brings the same native speed to hovers, go-to-definition, and error reporting. (We cover the editor story in depth in Module 5.)</p>
+    </div>
   </div>
 
-  <div class="complete-bar disabled" id="completeBar">
-    <input type="checkbox" id="completeCb" disabled>
-    <label for="completeCb" id="completeLabel">Answer all questions to unlock</label>
-    <button class="redo-btn" id="redoBtn">&#x21BA; Redo module</button>
+  <!-- TAB: USE ============================================================== -->
+  <div class="tabpanel" id="tab-use">
+    <div class="card">
+      <h3 style="margin-top:0">Type-check a project</h3>
+      <p>The native compiler reads your existing <code>tsconfig.json</code> unchanged — no configuration changes are needed to try it. The most common first command type-checks without writing any output, which is the fastest way to feel the speed difference:</p>
+      <pre><code><span class="cmt"># type-check only, no emit — reads ./tsconfig.json</span>
+npx tsc --noEmit
+
+<span class="cmt"># point at a specific project file</span>
+npx tsc -p tsconfig.json --noEmit</code></pre>
+      <p>The commands mirror what you already run with TypeScript 6.0. That is intentional: the entry point and the flags are the same, so muscle memory carries over.</p>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">Build (emit JavaScript)</h3>
+      <p>Drop <code>--noEmit</code> to produce JavaScript, exactly as before:</p>
+      <pre><code><span class="cmt"># compile to JS using your tsconfig outDir</span>
+npx tsc
+
+<span class="cmt"># watch mode — recompile on save</span>
+npx tsc -w</code></pre>
+      <div class="note warn"><strong>RC feature gaps to know.</strong> The native compiler is type-checking-complete but a few build-side features are still landing. During the preview, declaration-file emit (<code>--declaration</code> / <code>.d.ts</code>), some downlevel emit targets, and full <code>--build</code> (project-references orchestration) may be incomplete. The practical pattern teams use: type-check with the native compiler for speed, and keep TypeScript 6.0 (<code>tsc</code> from the <code>typescript</code> package) for any production emit that touches those gaps until the stable release. Module 4 covers this coexistence in detail.</div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">Wire it into package.json</h3>
+      <p>A clean way to adopt incrementally is to add native-compiler scripts alongside your existing ones, so you can compare both on demand:</p>
+      <pre><code><span class="cmt">// package.json</span>
+{
+  "scripts": {
+    "check": "tsc --noEmit",          <span class="cmt">// native: fast type-check</span>
+    "check:legacy": "tsc-6 --noEmit",  <span class="cmt">// fallback (see Side-by-side tab)</span>
+    "build": "tsc"
+  }
+}</code></pre>
+      <p>Because the native compiler honours all your existing <code>tsconfig.json</code> options and project references with no config changes, the only thing that changes in day-to-day use is the speed.</p>
+    </div>
+  </div>
+
+  <!-- TAB: SIDE-BY-SIDE ===================================================== -->
+  <div class="tabpanel" id="tab-sxs">
+    <div class="card">
+      <h3 style="margin-top:0">Why run both at once?</h3>
+      <p>Because the native compiler ships under the separate <code>@typescript/native-preview</code> package, it can live in the same project as your existing <code>typescript</code> install without conflict. That is exactly what you want during adoption: the native compiler for fast type-checks, the trusted 6.0 compiler for anything still being ported (declaration emit, full <code>--build</code>), and a way to compare the two side by side to confirm they agree.</p>
+      <p>The team has explicitly committed to keeping the two installable together "without any conflicts around which <code>tsc</code> is which" for the foreseeable future, so this is a supported workflow, not a hack.</p>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">Install both</h3>
+      <pre><code><span class="cmt"># the classic compiler (TypeScript 6.0) …</span>
+npm install -D typescript
+
+<span class="cmt"># … and the native preview alongside it</span>
+npm install -D @typescript/native-preview</code></pre>
+      <p>Now resolve the "which <code>tsc</code>?" question. The classic package's binary is <code>tsc</code>; the native RC binary is also <code>tsc</code>. To call them unambiguously in scripts, reference them by package path rather than the bare name:</p>
+      <pre><code><span class="cmt">// package.json — explicit, unambiguous</span>
+{
+  "scripts": {
+    <span class="cmt">// native preview (fast type-check)</span>
+    "check": "tsgo --noEmit",
+    <span class="cmt">// classic 6.0 compiler, by its package's bin path</span>
+    "check:6": "node ./node_modules/typescript/bin/tsc --noEmit",
+    <span class="cmt">// run both and compare — they should agree</span>
+    "check:both": "npm run check && npm run check:6"
+  }
+}</code></pre>
+      <div class="note"><strong>Tip.</strong> On RC builds where the native binary is <code>tsc</code>, the <code>tsgo</code> alias is still provided too, which is the simplest way to keep the two names distinct in scripts: <code>tsgo</code> = native, <code>tsc</code> (from the typescript package's bin) = classic.</div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">The compatibility package for tooling</h3>
+      <p>There is one more piece. Many tools in your stack — linters such as typescript-eslint, formatters, and editor plugins — import TypeScript's <em>programmatic API</em> directly. The native compiler's programmatic API is not stable yet; it is not expected until <strong>TypeScript 7.1 or later</strong>, several months after the 7.0 release. Until then, tools that depend on the 6.0-era API need that API to remain available.</p>
+      <p>For this, the team publishes a compatibility package, <code>@typescript/typescript6</code>. The pattern: run the native compiler for your own type-checks and builds, while tooling that needs the older API resolves it through the compat package. This keeps your linter and editor plugins working during the transition.</p>
+      <pre><code><span class="cmt"># API-compat shim for tools that import the 6.0 API</span>
+npm install -D @typescript/typescript6</code></pre>
+      <div class="note warn"><strong>Heads-up.</strong> If a dependency quietly pulls in an older <code>typescript</code> version, you can get confusing duplicate-version errors. If that happens, find the offending package (inspect <code>package-lock.json</code>), and reinstall cleanly. Module 4 goes deeper on the packaging and tooling transition.</div>
+    </div>
+  </div>
+
+  <!-- TAB: CHECK YOUR KNOWLEDGE ============================================= -->
+  <div class="tabpanel" id="tab-check">
+    <div id="questionsWrap" class="card">
+      <div class="eyebrow">Check your knowledge</div>
+
+      <div class="q">
+        <div class="stem">Q1. What is the primary change introduced by TypeScript 7?</div>
+        <label class="opt"><input type="radio" name="q1" value="A">The compiler and tooling were rebuilt as native code (ported to Go) for roughly 10× faster builds, while type-checking behaviour is preserved.</label>
+        <label class="opt"><input type="radio" name="q1" value="B">A large set of new type-system features and syntax were added to the language.</label>
+        <label class="opt"><input type="radio" name="q1" value="C">TypeScript stopped compiling to JavaScript and now runs its own bytecode at runtime.</label>
+      </div>
+
+      <div class="q">
+        <div class="stem">Q2. The team describes the effort as a "port, not a rewrite." Why does that distinction matter to you as a developer?</div>
+        <label class="opt"><input type="radio" name="q2" value="A">It means the editor extension is optional and you only get speed in CI.</label>
+        <label class="opt"><input type="radio" name="q2" value="B">Because the type-checking logic was kept structurally identical, a project that checks cleanly under 6.0 should produce the same results under 7.0.</label>
+        <label class="opt"><input type="radio" name="q2" value="C">It means your existing TypeScript source must be manually rewritten in Go.</label>
+      </div>
+
+      <div class="q">
+        <div class="stem">Q3. Why does a faster compiler improve the editing experience, not just CI build times?</div>
+        <label class="opt"><input type="radio" name="q3" value="A">The editor uses a separate, unrelated engine that was sped up independently.</label>
+        <label class="opt"><input type="radio" name="q3" value="B">Faster CI indirectly frees up the editor by reducing background network traffic.</label>
+        <label class="opt"><input type="radio" name="q3" value="C">The same type-checker that builds your code also powers editor features like hover, go-to-definition, and error reporting, so speeding it up speeds up both.</label>
+      </div>
+
+      <div class="q">
+        <div class="stem">Q4. During the preview period, which npm package provides the native TypeScript 7 compiler?</div>
+        <label class="opt"><input type="radio" name="q4" value="A">@typescript/native-preview</label>
+        <label class="opt"><input type="radio" name="q4" value="B">typescript@7-next</label>
+        <label class="opt"><input type="radio" name="q4" value="C">typescript-go</label>
+      </div>
+
+      <div class="q">
+        <div class="stem">Q5. You installed a native-preview build and <code>tsc</code> is not found. What is the most likely explanation?</div>
+        <label class="opt"><input type="radio" name="q5" value="A">The package failed to install and must be reinstalled globally only.</label>
+        <label class="opt"><input type="radio" name="q5" value="B">On pre-RC preview builds the binary is named <code>tsgo</code>; the <code>tsc</code> name applies to the 7.0 RC and later.</label>
+        <label class="opt"><input type="radio" name="q5" value="C">The native compiler has no command-line binary and runs only inside VS Code.</label>
+      </div>
+
+      <div class="q">
+        <div class="stem">Q6. Why can the native preview and the classic TypeScript 6.0 compiler be installed in the same project at once?</div>
+        <label class="opt"><input type="radio" name="q6" value="A">They share the same binary, so only one is ever really installed.</label>
+        <label class="opt"><input type="radio" name="q6" value="B">npm automatically uninstalls 6.0 when the preview is added.</label>
+        <label class="opt"><input type="radio" name="q6" value="C">The preview ships under a separate package name (@typescript/native-preview), so it does not collide with an existing typescript install — supporting side-by-side validation.</label>
+      </div>
+
+      <button class="submit-btn" id="submitAnswersBtn" disabled>Submit answers</button>
+      <div class="submit-note" id="submitNote">Select an answer for each question to submit.</div>
+    </div>
+
+    <div id="submittedWrap" class="card hidden">
+      <p>Answers submitted. Review complete — mark this module as complete below.</p>
+    </div>
+
+    <div class="complete-bar disabled" id="completeBar">
+      <input type="checkbox" id="completeCb" disabled>
+      <label for="completeCb" id="completeLabel">Answer all questions to unlock</label>
+      <button class="redo-btn" id="redoBtn">&#x21BA; Redo module</button>
+    </div>
   </div>
 
   <div class="nav-row">
@@ -191,7 +370,17 @@
 <script>
 /* ===== IDENTIFIERS — set at creation ====================================== */
 const EXAMPLE_ID = 'ts7-module-1-why-native-compiler';   // = filename minus .html
-const CORRECT = { q1:'A', q2:'B', q3:'C' };               // answer key (for scoring/exam, not gating)
+const QIDS = ['q1','q2','q3','q4','q5','q6'];
+const CORRECT = { q1:'A', q2:'B', q3:'C', q4:'A', q5:'B', q6:'C' };  // answer key
+
+/* ===== Tabs ============================================================== */
+document.getElementById('tabbar').addEventListener('click', function(e){
+  const btn = e.target.closest('.tabbtn'); if(!btn) return;
+  const tab = btn.getAttribute('data-tab');
+  document.querySelectorAll('.tabbtn').forEach(function(b){ b.classList.toggle('active', b===btn); });
+  document.querySelectorAll('.tabpanel').forEach(function(p){ p.classList.toggle('active', p.id==='tab-'+tab); });
+  window.scrollTo({top:0,behavior:'smooth'});
+});
 
 /* ===== Firebase init ====================================================== */
 const _FB_CONFIG = {
@@ -257,14 +446,14 @@ document.addEventListener('learnerReady', function() {
 });
 
 function checkAllAnswered() {
-  const all = ['q1','q2','q3'].every(n => document.querySelector('input[name="'+n+'"]:checked'));
+  const all = QIDS.every(n => document.querySelector('input[name="'+n+'"]:checked'));
   document.getElementById('submitAnswersBtn').disabled = !all;
   document.getElementById('submitNote').textContent = all ? 'Ready to submit.' : 'Select an answer for each question to submit.';
 }
 
 function submitAnswers() {
   const answers = {};
-  ['q1','q2','q3'].forEach(function(n){
+  QIDS.forEach(function(n){
     const v = document.querySelector('input[name="'+n+'"]:checked'); if (v) answers[n] = v.value;
   });
   let correct = 0;
