@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<!-- ============================================================================
+     SF KNOWLEDGE HUB — TypeScript 7 — MODULE 3
+     Breaking Changes & New Defaults
+     moduleKey (EXAMPLE_ID): ts7-module-3-breaking-changes-defaults
+     courseId  (CP_COURSE_ID): Nr2nA1nxBRaFA4fwzA36
+     Tabs: Overview / The new defaults / Migration lab / Check your knowledge.
+     ============================================================================ -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 3 — Breaking Changes & New Defaults — TypeScript 7</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Source+Code+Pro:wght@400;600&family=Source+Serif+4:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue:#1a6eb5; --blue-dark:#0f4c81; --ink:#1f2933; --muted:#647687;
+    --bg:#eef2f8; --card:#ffffff; --border:#d6e0ee; --green:#16a34a; --coral:#c0392b;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'Source Sans 3',system-ui,sans-serif;color:var(--ink);background:var(--bg);line-height:1.65;font-size:17px}
+  .userbar{display:flex;justify-content:space-between;align-items:center;padding:12px 24px;background:var(--card);border-bottom:1px solid var(--border);font-size:14px}
+  .signout{padding:8px 16px;border:none;border-radius:6px;background:var(--blue);color:#fff;cursor:pointer;font-family:inherit}
+  .crumbs{padding:14px 24px;color:var(--muted);font-size:13px}
+  .crumbs a{color:var(--blue);text-decoration:none}
+  .wrap{max-width:860px;margin:0 auto;padding:8px 24px 80px}
+  h1{font-family:'Source Serif 4',Georgia,serif;font-size:30px;margin:8px 0 4px}
+  h3{font-family:'Source Serif 4',Georgia,serif;font-size:19px;margin:22px 0 6px}
+  .eyebrow{font-family:'Source Code Pro',monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--blue)}
+  .tags{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+  .tag{font-family:'Source Code Pro',monospace;font-size:12px;background:#e3edf9;color:var(--blue-dark);padding:5px 10px;border-radius:14px}
+  .tabbar{display:flex;flex-wrap:wrap;gap:4px;border-bottom:2px solid var(--border);margin:22px 0 0}
+  .tabbtn{appearance:none;border:none;background:none;font-family:inherit;font-size:15px;font-weight:600;color:var(--muted);padding:11px 16px;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px}
+  .tabbtn:hover{color:var(--blue)}
+  .tabbtn.active{color:var(--blue-dark);border-bottom-color:var(--blue)}
+  .tabpanel{display:none}
+  .tabpanel.active{display:block;animation:fade .18s ease}
+  @keyframes fade{from{opacity:.4}to{opacity:1}}
+  .concepts{margin:18px 0}
+  .concept{border:1px solid var(--border);border-radius:12px;margin:10px 0;overflow:hidden;background:var(--card)}
+  .concept summary{cursor:pointer;padding:16px 18px;list-style:none;display:flex;align-items:center;gap:12px}
+  .concept summary::-webkit-details-marker{display:none}
+  .concept .chip{font-family:'Source Code Pro',monospace;font-size:12px;background:#e3edf9;color:var(--blue-dark);padding:5px 10px;border-radius:14px;white-space:nowrap}
+  .concept .headline{font-weight:600;color:var(--ink)}
+  .concept .toggle{margin-left:auto;font-family:'Source Code Pro',monospace;color:var(--blue);font-size:18px;line-height:1}
+  .concept[open] .toggle{transform:rotate(45deg)}
+  .concept .concept-body{padding:0 18px 18px}
+  .concept .concept-body p{margin:12px 0}
+  .concept .concept-body p:first-child{margin-top:4px}
+  .concept .concept-body p:last-child{margin-bottom:0}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px;margin:18px 0}
+  .card p{margin:0 0 12px}
+  .card p:last-child{margin-bottom:0}
+  code{font-family:'Source Code Pro',monospace;font-size:.92em;background:#eef3f9;padding:2px 6px;border-radius:5px}
+  pre{background:#0f2233;color:#e6edf3;border-radius:10px;padding:16px 18px;overflow-x:auto;font-family:'Source Code Pro',monospace;font-size:14.5px;line-height:1.6;margin:14px 0}
+  pre code{background:none;color:inherit;padding:0;font-size:inherit}
+  .cmt{color:#7d97ad}
+  .add{color:#7ee787}
+  .del{color:#ffa198}
+  .note{border-left:4px solid var(--blue);background:#f4f8fd;border-radius:0 8px 8px 0;padding:12px 16px;margin:14px 0;font-size:15.5px}
+  .note.warn{border-left-color:#d08a1e;background:#fdf7ec}
+  .note strong{color:var(--blue-dark)}
+  table.tbl{width:100%;border-collapse:collapse;margin:14px 0;font-size:15px}
+  table.tbl th,table.tbl td{border:1px solid var(--border);padding:9px 12px;text-align:left;vertical-align:top}
+  table.tbl th{background:#f4f8fd;font-family:'Source Code Pro',monospace;font-size:12.5px;color:var(--blue-dark)}
+  table.tbl td code{background:#eef3f9}
+  .primer{border:1px solid var(--border);border-radius:12px;margin:18px 0;overflow:hidden}
+  .primer summary{cursor:pointer;padding:14px 18px;background:#f4f8fd;font-weight:600;color:var(--blue-dark);list-style:none}
+  .primer summary::-webkit-details-marker{display:none}
+  .primer summary::before{content:'+ ';font-family:'Source Code Pro',monospace}
+  .primer[open] summary::before{content:'– '}
+  .primer .primer-body{padding:0 18px 16px}
+  .primer .primer-body p{margin:12px 0}
+  .q{margin:16px 0}
+  .q .stem{font-weight:600;margin-bottom:8px}
+  .opt{display:block;border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin:8px 0;cursor:pointer}
+  .opt input{margin-right:10px}
+  .submit-btn{padding:11px 20px;border:none;border-radius:8px;background:var(--blue);color:#fff;font-family:inherit;font-size:15px;cursor:pointer}
+  .submit-btn:disabled{background:#c3d3e6;cursor:not-allowed}
+  .submit-note{font-family:'Source Code Pro',monospace;font-size:13px;color:var(--muted);margin-top:8px}
+  .hidden{display:none}
+  .complete-bar{display:flex;align-items:center;gap:12px;border-top:1px solid var(--border);margin-top:22px;padding-top:18px}
+  .complete-bar.disabled{opacity:.5}
+  .complete-bar .redo-btn{margin-left:auto;display:none;border:1px solid var(--border);background:#fff;border-radius:8px;padding:8px 14px;cursor:pointer;font-family:inherit}
+  .complete-bar .redo-btn.visible{display:inline-block}
+  .complete-bar.done{color:var(--green)}
+  .nav-row{display:flex;justify-content:space-between;margin-top:30px}
+  .nav-btn{padding:12px 18px;border-radius:8px;background:var(--blue);color:#fff;text-decoration:none;font-weight:600}
+  .nav-btn.secondary{background:#fff;color:var(--blue);border:1px solid var(--border)}
+  .advisory{border-left:4px solid #d08a1e;background:#fdf7ec;border-radius:0 8px 8px 0;padding:12px 16px;margin:16px 0;font-size:14.5px;color:var(--ink)}
+  .advisory .when{font-family:'Source Code Pro',monospace;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:#a96c12;display:block;margin-bottom:3px}
+  .advisory code{font-family:'Source Code Pro',monospace;font-size:.92em;background:#f5ead2;padding:2px 6px;border-radius:5px}
+</style>
+</head>
+<body>
+
+<div class="userbar">
+  <span>Welcome, <span id="userEmail">…</span></span>
+  <button class="signout" onclick="pmSignOut()">Sign out</button>
+</div>
+<div class="crumbs">
+  <a href="course-map.html">Back to course dashboard</a> / Module 3 / Breaking Changes &amp; New Defaults
+</div>
+
+<div class="wrap">
+  <div class="eyebrow">Module 3</div>
+  <h1>Breaking Changes &amp; New Defaults</h1>
+  <div class="tags">
+    <span class="tag">hard errors</span>
+    <span class="tag">strict</span>
+    <span class="tag">rootDir / types</span>
+  </div>
+
+  <div class="tabbar" id="tabbar">
+    <button class="tabbtn active" data-tab="overview">Overview</button>
+    <button class="tabbtn" data-tab="defaults">The new defaults</button>
+    <button class="tabbtn" data-tab="lab">Migration lab</button>
+    <button class="tabbtn" data-tab="check">Check your knowledge</button>
+  </div>
+
+  <!-- TAB: OVERVIEW ========================================================= -->
+  <div class="tabpanel active" id="tab-overview">
+    <p style="color:var(--muted);margin:18px 0 4px">This is the module where a clean 6.0 project sails through and a neglected one hits a wall of errors. TypeScript 7 doesn't change <em>how</em> type-checking works — but it does change the <em>defaults</em> you start from and turns 6.0's gentle deprecation warnings into hard stops. Open each idea.</p>
+
+    <div class="concepts">
+      <details class="concept" open>
+        <summary>
+          <span class="chip">hard errors</span>
+          <span class="headline">Deprecations become hard errors</span>
+          <span class="toggle">+</span>
+        </summary>
+        <div class="concept-body">
+          <p>TypeScript 6.0 introduced a set of deprecations — old flags and behaviours it warned you about but still allowed. TypeScript 7.0 removes that grace period: anything 6.0 deprecated now produces a <strong>hard error</strong> that stops the build. Dropped outright include the <code>es5</code> compile target, <code>node10</code> module resolution, the <code>amd</code> and <code>umd</code> module formats, and <code>baseUrl</code> path resolution.</p>
+          <p>The escape hatch you may have leaned on in 6.0 — <code>"ignoreDeprecations": "6.0"</code> — does <strong>not</strong> work in 7.0. It was always meant to buy time, not to be permanent. This is why the team's advice is to do the cleanup under 6.0 first, where the tooling and the warnings still help you, rather than meeting every error at once on the jump to 7.0.</p>
+        </div>
+      </details>
+
+      <details class="concept">
+        <summary>
+          <span class="chip">new defaults</span>
+          <span class="headline">7.0 adopts 6.0's modern defaults</span>
+          <span class="toggle">+</span>
+        </summary>
+        <div class="concept-body">
+          <p>Beyond removing old behaviour, 7.0 starts you from different out-of-the-box settings — the modern defaults introduced in 6.0. The headline ones: <code>strict</code> is on, <code>module</code> defaults to <code>esnext</code>, and <code>target</code> points at a current ECMAScript version (legacy <code>es5</code> output is gone). These reflect a world where runtimes are evergreen and ESM is the norm.</p>
+          <p>If your <code>tsconfig.json</code> already sets these explicitly, nothing changes — your explicit values win. The projects that feel the shift are the ones that relied on the <em>old implicit</em> defaults without writing them down. The next tab walks each one.</p>
+        </div>
+      </details>
+
+      <details class="concept">
+        <summary>
+          <span class="chip">type ordering</span>
+          <span class="headline">stableTypeOrdering and the "honest build" test</span>
+          <span class="toggle">+</span>
+        </summary>
+        <div class="concept-body">
+          <p>Internally, TypeScript numbers types in the order it encounters them, and that ordering can subtly affect things like the order of members in emitted declaration files. 6.0 and 7.0 can order differently. 6.0 offers a flag, <code>--stableTypeOrdering</code>, that makes its ordering match 7.0's — useful when you're comparing the two compilers' output and want to separate real differences from harmless ordering noise.</p>
+          <p>This gives a precise test for "am I ready?": a project that compiles cleanly under 6.0 <em>with <code>stableTypeOrdering</code> enabled and <code>ignoreDeprecations</code> not set</em> should produce identical results under 7.0. That's the "clean and honest build" — no deprecated flags sneaking by, ordering aligned. If your 6.0 build passes that bar, the jump to 7.0 is essentially a non-event. Note <code>--stableTypeOrdering</code> can slow 6.0 type-checking noticeably (up to ~25% on some codebases), so it's a migration-time check, not an everyday setting.</p>
+        </div>
+      </details>
+    </div>
+
+    <details class="primer">
+      <summary>Refresh your knowledge?</summary>
+      <div class="primer-body">
+        <p><strong>What a compiler flag and a default are.</strong> A <strong>compiler flag</strong> (also called a compiler option) is a setting that changes how the compiler behaves — for example whether it emits output, which JavaScript version it targets, or how strict it is. You can pass flags on the command line (<code>--noEmit</code>) or, more commonly, set them in <code>tsconfig.json</code> under <code>compilerOptions</code>. A <strong>default</strong> is the value a flag takes when you don't set it yourself. "Changing a default" means the compiler now <em>assumes</em> a different value than before when you stay silent — which is exactly why projects that never wrote a setting down can behave differently after an upgrade, while projects that set it explicitly are unaffected.</p>
+
+        <p><strong>Warning vs. error.</strong> A <strong>warning</strong> flags something questionable but lets the build finish. An <strong>error</strong> stops the build. The whole story of this module is a set of things moving from the first category to the second: 6.0 warns, 7.0 errors. Warnings are easy to ignore, which is precisely why they don't carry over — 7.0 forces the issue.</p>
+
+        <p><strong>How tsconfig settings resolve.</strong> Your effective configuration is built up in a predictable order: a base config you <code>extends</code> from, then your own <code>compilerOptions</code> overriding it, then any flags passed on the command line overriding that. The compiler's built-in defaults sit underneath everything, filling in only what nobody specified. The practical upshot for migration: the more you state explicitly in <code>tsconfig.json</code>, the less a defaults change can surprise you — explicit settings are immune to shifting defaults.</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- TAB: THE NEW DEFAULTS ================================================= -->
+  <div class="tabpanel" id="tab-defaults">
+    <div class="advisory">
+      <span class="when">Accurate as of June 2026</span>
+      The defaults and dropped flags below track the TypeScript 7.0 RC (inherited from 6.0). Preview details can shift — confirm against the official TypeScript 6.0 and 7.0 release notes before relying on a specific value.
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">The changed defaults at a glance</h3>
+      <p>These are the out-of-the-box settings 7.0 adopts from 6.0. If your <code>tsconfig.json</code> already sets a value explicitly, that wins — this table is about what happens when you <em>don't</em>.</p>
+      <table class="tbl">
+        <tr><th>Option</th><th>New default</th><th>Why it matters</th></tr>
+        <tr><td><code>strict</code></td><td><code>true</code></td><td>Turns on the full family of strict checks. Implicit shortcuts become errors.</td></tr>
+        <tr><td><code>module</code></td><td><code>esnext</code></td><td>Output is ESM by default. CommonJS projects must set this explicitly.</td></tr>
+        <tr><td><code>target</code></td><td>current ES</td><td>Modern ECMAScript. <code>es5</code> output is gone.</td></tr>
+        <tr><td><code>types</code></td><td><code>[]</code> (empty)</td><td>No longer auto-loads every <code>@types</code> package — you list what you need.</td></tr>
+        <tr><td><code>rootDir</code></td><td>project root</td><td>No longer inferred from source files. Affects output folder structure.</td></tr>
+      </table>
+      <div class="note"><strong>The team's own call-out:</strong> <code>rootDir</code> and <code>types</code> are the two most likely to surprise you — both are easy to fix once you know to look.</div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0"><code>strict</code> is on by default</h3>
+      <p>If your project never wrote <code>"strict": true</code>, every type shortcut it quietly relied on for years is now flagged. This is the single most common source of upgrade errors. You have two honest paths: fix the errors (best), or set <code>"strict": false</code> explicitly while you work through them. What you should not do is pretend it isn't happening — the default has changed regardless.</p>
+      <pre><code><span class="cmt">// to opt back out temporarily while you migrate</span>
+{
+  "compilerOptions": {
+    "strict": false
+  }
+}</code></pre>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0"><code>module: esnext</code> — ESM by default</h3>
+      <p>Output is now ES modules unless you say otherwise. For a browser project behind a bundler, that's usually fine. For a Node.js project that uses <code>require()</code> and CommonJS, you need to be explicit, or your emitted code won't run as expected:</p>
+      <pre><code><span class="cmt">// keep CommonJS for a Node project that needs it</span>
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "node16"
+  }
+}</code></pre>
+      <div class="note warn"><strong>Note:</strong> <code>node10</code> module resolution is one of the dropped behaviours — prefer <code>node16</code>, <code>nodenext</code>, or <code>bundler</code>.</div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0"><code>types: []</code> — explicit type packages</h3>
+      <p>Previously the compiler auto-loaded every <code>@types/*</code> package it found in <code>node_modules</code> into global scope. Now it loads none by default — you declare exactly which global type packages you depend on. If global names suddenly go "cannot find name," this is usually why:</p>
+      <pre><code>{
+  "compilerOptions": {
+    <span class="cmt">// list the global @types you actually rely on</span>
+    "types": ["node"]
+  }
+}</code></pre>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0"><code>rootDir</code> — explicit output structure</h3>
+      <p><code>rootDir</code> used to be inferred from the common directory of your source files; now it defaults to the directory containing <code>tsconfig.json</code>. If your config sits at the project root and your code lives in <code>./src</code>, your output folder structure can change unexpectedly (an extra <code>src/</code> nesting under <code>outDir</code>). Set it explicitly to preserve the old layout:</p>
+      <pre><code>{
+  "compilerOptions": {
+    <span class="add">+   "rootDir": "./src"</span>
+  },
+  "include": ["./src"]
+}</code></pre>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">Dropped behaviours (now hard errors)</h3>
+      <p>These were deprecated in 6.0 and are removed in 7.0 — encountering them stops the build:</p>
+      <table class="tbl">
+        <tr><th>Removed</th><th>Use instead</th></tr>
+        <tr><td><code>target: es5</code></td><td><code>es2021</code> or newer (modern runtimes are evergreen)</td></tr>
+        <tr><td><code>moduleResolution: node10</code></td><td><code>node16</code>, <code>nodenext</code>, or <code>bundler</code></td></tr>
+        <tr><td><code>module: amd / umd</code></td><td><code>esnext</code>, <code>commonjs</code>, or <code>preserve</code></td></tr>
+        <tr><td><code>baseUrl</code></td><td><code>paths</code> mapping in <code>tsconfig.json</code></td></tr>
+      </table>
+    </div>
+
+    <details class="primer">
+      <summary>Refresh your knowledge?</summary>
+      <div class="primer-body">
+        <p><strong>What <code>strict</code> actually turns on.</strong> <code>"strict": true</code> isn't a single check — it's an umbrella that enables a family of stricter type-checking options at once. The ones you'll meet most:</p>
+        <p>• <strong><code>strictNullChecks</code></strong> — <code>null</code> and <code>undefined</code> are no longer silently assignable to every type. You must handle the "it might be missing" case, which eliminates a huge class of "cannot read property of undefined" bugs.<br>
+        • <strong><code>noImplicitAny</code></strong> — if the compiler can't infer a type and you didn't annotate one, it errors instead of silently falling back to <code>any</code>. This is the check that flags years of untyped shortcuts.<br>
+        • <strong><code>strictFunctionTypes</code></strong> — stricter, safer checking of function-parameter compatibility.<br>
+        • <strong><code>strictBindCallApply</code></strong> — <code>bind</code>, <code>call</code>, and <code>apply</code> are checked against the real signature.<br>
+        • <strong><code>strictPropertyInitialization</code></strong> — class properties must be assigned in the constructor (or marked optional), so you don't read an uninitialised field.<br>
+        • <strong><code>noImplicitThis</code></strong> and <strong><code>alwaysStrict</code></strong> round out the set.</p>
+        <p>Because these turn on together, flipping <code>strict</code> on a previously-loose codebase can surface many errors at once. That's not the compiler being difficult — each error is a real "this could be <code>undefined</code>" or "this is secretly <code>any</code>" that was there all along. You can also enable them one at a time (set <code>strict: false</code> and turn on individual options) to migrate gradually.</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- TAB: MIGRATION LAB ==================================================== -->
+  <div class="tabpanel" id="tab-lab">
+    <div class="card">
+      <h3 style="margin-top:0">Goal</h3>
+      <p>Take a deliberately "dishonest" TypeScript 6.0 project — one leaning on deprecated flags and implicit defaults — and drive it to a clean 7.0 build, fixing each hard error in turn. The exercise mirrors exactly what you'll do on a real codebase.</p>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">Step 1 — Start from a "dishonest" config</h3>
+      <p>Here's a <code>tsconfig.json</code> that compiled (with warnings) under older TypeScript and breaks under 7.0. Each line in red is a problem 7.0 will reject:</p>
+      <pre><code>{
+  "compilerOptions": {
+    <span class="del">"target": "es5",</span>              <span class="cmt">// dropped</span>
+    <span class="del">"module": "amd",</span>              <span class="cmt">// dropped</span>
+    <span class="del">"moduleResolution": "node10",</span> <span class="cmt">// dropped</span>
+    <span class="del">"baseUrl": "./src",</span>           <span class="cmt">// dropped</span>
+    <span class="del">"ignoreDeprecations": "6.0",</span>  <span class="cmt">// no longer honoured</span>
+    "outDir": "./dist"
+    <span class="cmt">// note: no strict, no rootDir, no types — all relying on old implicit defaults</span>
+  },
+  "include": ["./src"]
+}</code></pre>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">Step 2 — Run 7.0 and read the errors</h3>
+      <pre><code>npx tsc --noEmit</code></pre>
+      <p>You'll get a cluster of configuration errors (the dropped flags) plus a wave of type errors once <code>strict</code> kicks in by its new default. Don't panic at the count — work top-down: fix the config errors first, because some type errors disappear once the compiler is configured correctly.</p>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">Step 3 — Modernise the config</h3>
+      <p>Rewrite the options to their supported equivalents, and make the previously-implicit settings explicit:</p>
+      <pre><code>{
+  "compilerOptions": {
+    <span class="add">"target": "es2022",</span>            <span class="cmt">// was es5</span>
+    <span class="add">"module": "nodenext",</span>          <span class="cmt">// was amd</span>
+    <span class="add">"moduleResolution": "nodenext",</span> <span class="cmt">// was node10</span>
+    <span class="add">"paths": { "@app/*": ["./src/*"] },</span> <span class="cmt">// replaces baseUrl</span>
+    <span class="add">"rootDir": "./src",</span>            <span class="cmt">// make output structure explicit</span>
+    <span class="add">"types": ["node"],</span>             <span class="cmt">// list globals you depend on</span>
+    "outDir": "./dist"
+    <span class="cmt">// ignoreDeprecations removed entirely</span>
+  },
+  "include": ["./src"]
+}</code></pre>
+      <div class="note"><strong>Shortcut:</strong> the team ships a helper, <code>ts5to6</code>, that automates the most disruptive tsconfig changes (such as <code>baseUrl</code> removal and <code>rootDir</code>). Run it, review the diff, then finish by hand. Doing the cleanup under 6.0 first means you get its warnings and tooling to guide you.</div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">Step 4 — Work through the strict errors</h3>
+      <p>With the config clean, re-run and address the <code>strict</code> errors. Two common shapes:</p>
+      <pre><code><span class="cmt">// strictNullChecks: handle the missing case</span>
+function greet(name?: string) {
+  <span class="del">return "Hi " + name.toUpperCase();</span>        <span class="cmt">// name might be undefined</span>
+  <span class="add">return "Hi " + (name ?? "there").toUpperCase();</span>
+}
+
+<span class="cmt">// noImplicitAny: annotate the parameter</span>
+<span class="del">function total(items) { /* ... */ }</span>          <span class="cmt">// items is implicitly any</span>
+<span class="add">function total(items: number[]) { /* ... */ }</span></code></pre>
+      <p>If the volume is large, you can stage it: set <code>"strict": false</code> and enable individual checks (<code>strictNullChecks</code>, then <code>noImplicitAny</code>, …) one at a time, landing each as its own change rather than all at once.</p>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">Step 5 — Confirm the "honest build"</h3>
+      <p>Your target is a project that passes cleanly under 6.0 with <code>--stableTypeOrdering</code> on and no <code>ignoreDeprecations</code>. When that holds, 7.0 should agree:</p>
+      <pre><code><span class="cmt"># 6.0 clean + honest</span>
+node ./node_modules/typescript/bin/tsc --noEmit --stableTypeOrdering
+
+<span class="cmt"># 7.0 should now pass with the same result</span>
+npx tsc --noEmit</code></pre>
+      <p>When both pass, you've done the real work of the migration. Everything else in this course (packaging, editor, rollout) is logistics on top of a build that's already correct.</p>
+    </div>
+
+    <details class="primer">
+      <summary>Refresh your knowledge?</summary>
+      <div class="primer-body">
+        <p><strong>How to read a TypeScript error message.</strong> A diagnostic has four parts: the <em>file and position</em> (<code>src/app.ts:12:7</code>), an <em>error code</em> (<code>TS2532</code>), a <em>message</em>, and often a chain of "related" notes underneath. Read it back-to-front: the deepest related note usually names the root cause, while the top line tells you where to fix it. The error code is searchable — pasting <code>TS2532</code> into a search engine reliably finds an explanation. Don't be intimidated by a large count; errors cascade, so fixing one root cause (a wrong config option, a missing type package) often clears dozens of downstream messages at once.</p>
+
+        <p><strong>The <code>ignoreDeprecations</code> escape hatch — and why it ends.</strong> In 6.0, adding <code>"ignoreDeprecations": "6.0"</code> to <code>compilerOptions</code> silences the deprecation <em>warnings</em>, letting a legacy config keep building while you plan the cleanup. It is explicitly a temporary measure. In 7.0 the deprecated behaviours are <em>removed</em>, not merely warned about, so the flag has nothing left to silence and stops working. The lesson the team repeats: use <code>ignoreDeprecations</code> to buy a little time under 6.0, but treat the underlying cleanup as the actual task — because 7.0 will require it regardless.</p>
+
+        <p><strong>Why "do it under 6.0 first" is the recommended path.</strong> 6.0 is type-checking-compatible with 7.0 but still gives you warnings, the <code>ignoreDeprecations</code> safety valve, and migration tooling like <code>ts5to6</code>. That's a gentler environment to fix things in than 7.0, where the same issues are hard errors with no valve. Clean up on 6.0, confirm the honest build, then the version bump to 7.0 is anticlimactic — which is the goal.</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- TAB: CHECK YOUR KNOWLEDGE ============================================= -->
+  <div class="tabpanel" id="tab-check">
+    <div id="questionsWrap" class="card">
+      <div class="eyebrow">Check your knowledge</div>
+
+      <div class="q">
+        <div class="stem">Q1. What happens in TypeScript 7.0 to flags and behaviours that TypeScript 6.0 had merely deprecated?</div>
+        <label class="opt"><input type="radio" name="q1" value="A">They are restored to their original behaviour.</label>
+        <label class="opt"><input type="radio" name="q1" value="B">They become hard errors that stop the build.</label>
+        <label class="opt"><input type="radio" name="q1" value="C">They continue to emit warnings, exactly as in 6.0.</label>
+      </div>
+
+      <div class="q">
+        <div class="stem">Q2. Which two default changes does the TypeScript team call out as the most likely to surprise you?</div>
+        <label class="opt"><input type="radio" name="q2" value="A"><code>rootDir</code> and <code>types</code>.</label>
+        <label class="opt"><input type="radio" name="q2" value="B"><code>strict</code> and <code>outDir</code>.</label>
+        <label class="opt"><input type="radio" name="q2" value="C"><code>noEmit</code> and <code>incremental</code>.</label>
+      </div>
+
+      <div class="q">
+        <div class="stem">Q3. Your project never set <code>"strict"</code> and now shows many type errors under 7.0. Why?</div>
+        <label class="opt"><input type="radio" name="q3" value="A"><code>strict</code> is now on by default, so previously-tolerated shortcuts (implicit any, unchecked null) are flagged.</label>
+        <label class="opt"><input type="radio" name="q3" value="B">7.0 changed the type-checking algorithm, producing new and different results.</label>
+        <label class="opt"><input type="radio" name="q3" value="C">The native compiler cannot read an existing tsconfig.json.</label>
+      </div>
+
+      <div class="q">
+        <div class="stem">Q4. What is the status of <code>"ignoreDeprecations": "6.0"</code> in TypeScript 7.0?</div>
+        <label class="opt"><input type="radio" name="q4" value="A">It works permanently and is the recommended long-term fix.</label>
+        <label class="opt"><input type="radio" name="q4" value="B">It no longer works — the deprecated behaviours are removed, so there's nothing left to silence.</label>
+        <label class="opt"><input type="radio" name="q4" value="C">It now also disables strict mode.</label>
+      </div>
+
+      <div class="q">
+        <div class="stem">Q5. What is the precise "clean and honest build" test for 7.0-readiness?</div>
+        <label class="opt"><input type="radio" name="q5" value="A">The project builds under any TypeScript 5.x version without warnings.</label>
+        <label class="opt"><input type="radio" name="q5" value="B">The project compiles cleanly under 6.0 with <code>stableTypeOrdering</code> enabled and <code>ignoreDeprecations</code> not set — it should then produce identical results under 7.0.</label>
+        <label class="opt"><input type="radio" name="q5" value="C">The project has zero dependencies.</label>
+      </div>
+
+      <div class="q">
+        <div class="stem">Q6. Why does the team recommend doing the cleanup under TypeScript 6.0 before jumping to 7.0?</div>
+        <label class="opt"><input type="radio" name="q6" value="A">6.0 is faster than 7.0, so the work completes sooner.</label>
+        <label class="opt"><input type="radio" name="q6" value="B">6.0 still gives warnings, the <code>ignoreDeprecations</code> valve, and migration tooling (ts5to6) — a gentler environment than 7.0, where the same issues are hard errors.</label>
+        <label class="opt"><input type="radio" name="q6" value="C">7.0 cannot read a tsconfig.json that was written for 6.0.</label>
+      </div>
+
+      <button class="submit-btn" id="submitAnswersBtn" disabled>Submit answers</button>
+      <div class="submit-note" id="submitNote">Select an answer for each question to submit.</div>
+    </div>
+
+    <div id="submittedWrap" class="card hidden">
+      <p>Answers submitted. Review complete — mark this module as complete below.</p>
+    </div>
+
+    <div class="complete-bar disabled" id="completeBar">
+      <input type="checkbox" id="completeCb" disabled>
+      <label for="completeCb" id="completeLabel">Answer all questions to unlock</label>
+      <button class="redo-btn" id="redoBtn">&#x21BA; Redo module</button>
+    </div>
+  </div>
+
+  <div class="nav-row">
+    <a class="nav-btn secondary" href="ts7-module-2-performance-parallelism.html">← Module 2</a>
+    <a class="nav-btn" href="ts7-module-4-packaging-tooling.html">Module 4: Packaging &amp; Tooling →</a>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script>
+const EXAMPLE_ID = 'ts7-module-3-breaking-changes-defaults';
+const QIDS = ['q1','q2','q3','q4','q5','q6'];
+const CORRECT = { q1:'B', q2:'A', q3:'A', q4:'B', q5:'B', q6:'B' };
+
+document.getElementById('tabbar').addEventListener('click', function(e){
+  const btn = e.target.closest('.tabbtn'); if(!btn) return;
+  const tab = btn.getAttribute('data-tab');
+  document.querySelectorAll('.tabbtn').forEach(function(b){ b.classList.toggle('active', b===btn); });
+  document.querySelectorAll('.tabpanel').forEach(function(p){ p.classList.toggle('active', p.id==='tab-'+tab); });
+  window.scrollTo({top:0,behavior:'smooth'});
+});
+
+const _FB_CONFIG = {
+  apiKey: "AIzaSyC-I-IOCq2fCwa471fsD5xOn6SYQSBDp7Q",
+  authDomain: "sfcertification-grafana.firebaseapp.com",
+  projectId: "sfcertification-grafana",
+  storageBucket: "sfcertification-grafana.firebasestorage.app",
+  messagingSenderId: "227322696511",
+  appId: "1:227322696511:web:12e7ced7dd3d45fa06798a"
+};
+if (!window._fbApp) window._fbApp = firebase.initializeApp(_FB_CONFIG);
+const _auth = firebase.auth(window._fbApp);
+window._learnerUid = 'anon'; window._learnerEmail = null;
+
+window.pmLearnerKey = function(exampleId){ return 'pm_learner_' + window._learnerUid + '_' + exampleId; };
+function loadState(){ try { return JSON.parse(localStorage.getItem(window.pmLearnerKey(EXAMPLE_ID))) || {}; } catch(e){ return {}; } }
+function saveState(s){ localStorage.setItem(window.pmLearnerKey(EXAMPLE_ID), JSON.stringify(s)); }
+
+window.pmSignOut = function(){ _auth.signOut(); };
+
+_auth.onAuthStateChanged(function(user){
+  if (user && user.email && user.email.endsWith('@sourcefuse.com')) {
+    window._learnerUid = user.uid; window._learnerEmail = user.email;
+    document.getElementById('userEmail').textContent = user.email;
+    document.dispatchEvent(new Event('learnerReady'));
+  } else if (user && user.email && !user.email.endsWith('@sourcefuse.com')) {
+    _auth.signOut();
+  } else {
+    window.location.href = 'course-map.html';
+  }
+});
+
+document.addEventListener('learnerReady', function() {
+  const state = loadState();
+  cpEnsureModuleStarted();
+
+  const completeCb = document.getElementById('completeCb');
+  if (completeCb) {
+    completeCb.addEventListener('change', function() {
+      if (!completeCb.checked) return;
+      const s = loadState(); s.complete = true; saveState(s);
+      activateCompleteBar(true);
+    });
+  }
+  const redoBtn = document.getElementById('redoBtn');
+  if (redoBtn) redoBtn.addEventListener('click', function() {
+    localStorage.removeItem(window.pmLearnerKey(EXAMPLE_ID));
+    document.getElementById('questionsWrap').classList.remove('hidden');
+    document.getElementById('submittedWrap').classList.add('hidden');
+    document.querySelectorAll('.opt input[type="radio"]').forEach(function(r){ r.checked = false; });
+    document.getElementById('submitAnswersBtn').disabled = true;
+    document.getElementById('submitNote').textContent = 'Select an answer for each question to submit.';
+    activateCompleteBar(false);
+  });
+
+  if (state.complete) { showSubmittedState(); activateCompleteBar(true); return; }
+  if (state.submittedAt) { showSubmittedState(); activateCompleteBar(false); return; }
+
+  document.querySelectorAll('.opt input[type="radio"]').forEach(function(radio){
+    radio.addEventListener('change', checkAllAnswered);
+  });
+  document.getElementById('submitAnswersBtn').addEventListener('click', submitAnswers);
+});
+
+function checkAllAnswered() {
+  const all = QIDS.every(n => document.querySelector('input[name="'+n+'"]:checked'));
+  document.getElementById('submitAnswersBtn').disabled = !all;
+  document.getElementById('submitNote').textContent = all ? 'Ready to submit.' : 'Select an answer for each question to submit.';
+}
+
+function submitAnswers() {
+  const answers = {};
+  QIDS.forEach(function(n){
+    const v = document.querySelector('input[name="'+n+'"]:checked'); if (v) answers[n] = v.value;
+  });
+  let correct = 0;
+  Object.keys(CORRECT).forEach(function(n){ if (answers[n] === CORRECT[n]) correct++; });
+  const s = loadState();
+  s.exampleId = EXAMPLE_ID; s.answers = answers; s.correct = correct;
+  s.submittedAt = new Date().toISOString();
+  saveState(s);
+  showSubmittedState();
+  activateCompleteBar(false);
+}
+
+function showSubmittedState() {
+  document.getElementById('questionsWrap').classList.add('hidden');
+  document.getElementById('submittedWrap').classList.remove('hidden');
+}
+
+function activateCompleteBar(isDone) {
+  const bar = document.getElementById('completeBar');
+  const cb = document.getElementById('completeCb');
+  const label = document.getElementById('completeLabel');
+  const redo = document.getElementById('redoBtn');
+  if (!bar) return;
+  if (isDone) {
+    bar.className = 'complete-bar done';
+    cb.disabled = true; cb.checked = true;
+    label.textContent = '✓ Module complete';
+    if (redo) redo.classList.add('visible');
+    cpWriteModuleComplete();
+  } else {
+    bar.className = 'complete-bar';
+    cb.disabled = false; cb.checked = false;
+    label.textContent = 'Mark module as complete';
+    if (redo) redo.classList.remove('visible');
+  }
+}
+</script>
+
+<!-- ===== SHARED courseProgress v2 wiring (inlined) ========================= -->
+<script>
+var CP_COURSE_ID = 'Nr2nA1nxBRaFA4fwzA36';
+var THIS_MODULE_KEY = EXAMPLE_ID;
+var CP_MODULE_IDS = [
+  'ts7-module-1-why-native-compiler',
+  'ts7-module-2-performance-parallelism',
+  'ts7-module-3-breaking-changes-defaults',
+  'ts7-module-4-packaging-tooling',
+  'ts7-module-5-editor-rollout'
+];
+
+function cpNow() {
+  var d = new Date();
+  var pad = function(n){ return String(n).padStart(2,'0'); };
+  return {
+    date: d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()),
+    time: pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds()),
+    ms:   d.getTime()
+  };
+}
+function cpFmtDuration(ms) {
+  if (ms == null || ms < 0) return null;
+  var s = Math.floor(ms/1000), h = Math.floor(s/3600), m = Math.floor((s%3600)/60), sec = s%60;
+  if (h > 0) return h+'h '+m+'m '+sec+'s';
+  if (m > 0) return m+'m '+sec+'s';
+  return sec+'s';
+}
+function cpDb() { return firebase.firestore(window._fbApp); }
+function cpDocRef() { return cpDb().collection('courseProgress').doc(window._learnerUid); }
+function cpReady() { return window._fbApp && window._learnerUid && window._learnerUid !== 'anon'; }
+
+/* Set module start once (call on page load / learnerReady). Never overwrites
+   an existing start. Also stamps courseStartedOn/At once for the whole course. */
+function cpEnsureModuleStarted() {
+  if (!cpReady()) return;
+  var ref = cpDocRef();
+  ref.get().then(function(snap){
+    var data = snap.exists ? (snap.data() || {}) : {};
+    var course = (data.courses && data.courses[CP_COURSE_ID]) || {};
+    var mods = course.modules || {};
+    var t = cpNow();
+    var update = { email: window._learnerEmail || null, name: window._learnerEmail || null, courses: {} };
+    update.courses[CP_COURSE_ID] = { moduleInProgress: THIS_MODULE_KEY, modules: {} };
+    if (!mods[THIS_MODULE_KEY] || !mods[THIS_MODULE_KEY].startedOn) {
+      update.courses[CP_COURSE_ID].modules[THIS_MODULE_KEY] = { startedOn: t.date, startedAt: t.time };
+    }
+    // Stamp course start once.
+    if (!course.courseStartedOn) { update.courses[CP_COURSE_ID].courseStartedOn = t.date; update.courses[CP_COURSE_ID].courseStartedAt = t.time; }
+    ref.set(update, { merge: true })
+       .catch(function(e){ console.warn('[courseProgress] start write failed:', e.message); });
+  }).catch(function(e){ console.warn('[courseProgress] start read failed:', e.message); });
+}
+
+/* On completion: write module completion + timeTaken; if all modules done,
+   close the course. Call from the "mark complete" handler. */
+function cpWriteModuleComplete() {
+  if (!cpReady()) return;
+  var ref = cpDocRef();
+  ref.get().then(function(snap){
+    var data = snap.exists ? (snap.data() || {}) : {};
+    var course = (data.courses && data.courses[CP_COURSE_ID]) || {};
+    var mods = course.modules || {};
+    var t = cpNow();
+    var startMs = null;
+    var mEntry = mods[THIS_MODULE_KEY];
+    if (mEntry && mEntry.startedOn && mEntry.startedAt) {
+      startMs = new Date(mEntry.startedOn + 'T' + mEntry.startedAt).getTime();
+    }
+    var moduleTimeTaken = startMs != null ? cpFmtDuration(t.ms - startMs) : null;
+
+    var courseUpdate = { modules: {} };
+    // Preserve an existing real completion; otherwise stamp now.
+    var existing = mods[THIS_MODULE_KEY] || {};
+    courseUpdate.modules[THIS_MODULE_KEY] = {
+      completedOn: existing.completedOn || t.date,
+      completedAt: existing.completedAt || t.time,
+      timeTaken:   existing.timeTaken   || moduleTimeTaken
+    };
+    if (course.moduleInProgress === THIS_MODULE_KEY) courseUpdate.moduleInProgress = null;
+
+    var completedCount = 0;
+    CP_MODULE_IDS.forEach(function(id){
+      if (id === THIS_MODULE_KEY) { completedCount++; return; }
+      if (mods[id] && mods[id].completedOn) completedCount++;
+    });
+    if (completedCount >= CP_MODULE_IDS.length && !course.courseCompletedOn) {
+      courseUpdate.courseCompletedOn = t.date;
+      courseUpdate.courseCompletedAt = t.time;
+      if (course.courseStartedOn && course.courseStartedAt) {
+        var cStart = new Date(course.courseStartedOn + 'T' + course.courseStartedAt).getTime();
+        courseUpdate.timeTaken = cpFmtDuration(t.ms - cStart);
+      }
+    }
+    var update = { email: window._learnerEmail || null, name: window._learnerEmail || null, courses: {} };
+    update.courses[CP_COURSE_ID] = courseUpdate;
+    ref.set(update, { merge: true })
+       .catch(function(e){ console.warn('[courseProgress] complete write failed:', e.message); });
+  }).catch(function(e){ console.warn('[courseProgress] complete read failed:', e.message); });
+}
+</script>
+</body>
+</html>
