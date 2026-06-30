@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<!-- ============================================================================
+     SF KNOWLEDGE HUB — TypeScript 7 — CERTIFICATION EXAM
+     SF Certified TypeScript 7 Practitioner
+     courseId (COURSE_ID): Nr2nA1nxBRaFA4fwzA36
+     Samples 30 of 45 from question-bank.js per attempt. 70% pass, 45 min, 3 attempts.
+     Writes attempts to courseExamResults/{email}/courses/{courseId}/attempts/{auto-id}.
+     Email resolved from authenticated Firebase user (currentUser), not sessionStorage.
+     ============================================================================ -->
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SF Certified TypeScript 7 Practitioner — Exam</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Source+Code+Pro:wght@400;600&family=Source+Serif+4:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--blue:#1a6eb5;--blue-dark:#0f4c81;--ink:#1f2933;--muted:#647687;--bg:#eef2f8;--card:#fff;--border:#d6e0ee;--green:#16a34a;--coral:#c0392b}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'Source Sans 3',system-ui,sans-serif;color:var(--ink);background:var(--bg);line-height:1.65;font-size:17px}
+  .userbar{display:flex;justify-content:space-between;align-items:center;padding:12px 24px;background:var(--card);border-bottom:1px solid var(--border);font-size:14px}
+  .signout{padding:8px 16px;border:none;border-radius:6px;background:var(--blue);color:#fff;cursor:pointer;font-family:inherit}
+  .crumbs{padding:14px 24px;color:var(--muted);font-size:13px}
+  .crumbs a{color:var(--blue);text-decoration:none}
+  .wrap{max-width:820px;margin:0 auto;padding:8px 24px 90px}
+  h1{font-family:'Source Serif 4',Georgia,serif;font-size:30px;margin:8px 0}
+  h2{font-family:'Source Serif 4',Georgia,serif;font-size:22px}
+  .eyebrow{font-family:'Source Code Pro',monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--blue)}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px;margin:18px 0}
+  .meta{font-family:'Source Code Pro',monospace;font-size:13.5px;color:var(--muted);margin:10px 0}
+  .meta b{color:var(--ink)}
+  .start-btn{display:block;width:100%;padding:14px;border:none;border-radius:8px;background:var(--blue);color:#fff;font-size:16px;font-family:inherit;cursor:pointer}
+  .start-btn:disabled{background:#c3d3e6;cursor:not-allowed}
+  .attempt-info{font-family:'Source Code Pro',monospace;color:var(--muted);margin:10px 0;font-size:14px}
+  /* exam */
+  .examhead{position:sticky;top:0;background:var(--bg);padding:12px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;z-index:5}
+  .timer{font-family:'Source Code Pro',monospace;font-weight:600;font-size:16px;color:var(--blue-dark)}
+  .timer.warn{color:var(--coral)}
+  .progresscount{font-family:'Source Code Pro',monospace;font-size:14px;color:var(--muted)}
+  .q{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px;margin:14px 0}
+  .q .qnum{font-family:'Source Code Pro',monospace;font-size:12px;color:var(--blue);text-transform:uppercase;letter-spacing:.06em}
+  .q .stem{font-weight:600;margin:6px 0 10px}
+  .opt{display:block;border:1px solid var(--border);border-radius:8px;padding:11px 13px;margin:8px 0;cursor:pointer}
+  .opt input{margin-right:10px}
+  .opt code,.stem code{font-family:'Source Code Pro',monospace;font-size:.9em;background:#eef3f9;padding:1px 5px;border-radius:4px}
+  .submit-exam{display:block;width:100%;padding:14px;border:none;border-radius:8px;background:var(--green);color:#fff;font-size:16px;font-family:inherit;cursor:pointer;margin-top:18px}
+  /* result */
+  .result-badge{font-family:'Source Code Pro',monospace;font-size:14px;display:inline-block;padding:6px 14px;border-radius:14px;font-weight:600}
+  .result-badge.pass{background:#e6f4ec;color:var(--green)}
+  .result-badge.fail{background:#fbeaea;color:var(--coral)}
+  .scoreline{font-size:34px;font-family:'Source Serif 4',serif;margin:10px 0}
+  .hidden{display:none}
+  .nav-btn{display:inline-block;padding:12px 18px;border-radius:8px;background:var(--blue);color:#fff;text-decoration:none;font-weight:600;margin-top:8px}
+  .nav-btn.secondary{background:#fff;color:var(--blue);border:1px solid var(--border)}
+</style>
+</head>
+<body>
+
+<div class="userbar">
+  <span>Welcome, <span id="userEmail">…</span></span>
+  <button class="signout" onclick="pmSignOut()">Sign out</button>
+</div>
+<div class="crumbs"><a href="course-map.html">Back to course dashboard</a> / Certification exam</div>
+
+<div class="wrap">
+
+  <!-- START SCREEN -->
+  <div id="startScreen">
+    <div class="eyebrow">Certification</div>
+    <h1>SF Certified TypeScript 7 Practitioner</h1>
+    <div class="card">
+      <p>This exam draws a random set of questions from the full course bank covering all five modules. Answer carefully — you can review and change answers until you submit.</p>
+      <div class="meta"><b>Questions:</b> 30 (sampled from 45)</div>
+      <div class="meta"><b>Pass mark:</b> 70%</div>
+      <div class="meta"><b>Time limit:</b> 45 minutes</div>
+      <div class="meta"><b>Attempts allowed:</b> 3</div>
+      <div class="attempt-info" id="attemptInfo">Checking your attempts…</div>
+      <button class="start-btn" id="startBtn" disabled>Begin exam →</button>
+    </div>
+  </div>
+
+  <!-- EXAM SCREEN -->
+  <div id="examScreen" class="hidden">
+    <div class="examhead">
+      <span class="progresscount" id="progressCount">0 / 30 answered</span>
+      <span class="timer" id="timer">45:00</span>
+    </div>
+    <div id="questionList"></div>
+    <button class="submit-exam" id="submitExamBtn">Submit exam</button>
+  </div>
+
+  <!-- RESULT SCREEN -->
+  <div id="resultScreen" class="hidden">
+    <div class="card">
+      <span class="result-badge" id="resultBadge"></span>
+      <div class="scoreline" id="scoreLine"></div>
+      <p id="resultMsg"></p>
+      <a class="nav-btn secondary" href="course-map.html">Back to dashboard</a>
+    </div>
+  </div>
+
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="question-bank.js"></script>
+<script>
+const COURSE_ID   = 'Nr2nA1nxBRaFA4fwzA36';
+const EXAM_SIZE   = 30;
+const PASS_MARK   = 0.70;
+const TIME_LIMIT  = 45 * 60;   // seconds
+const MAX_ATTEMPTS = 3;
+const CERT_TITLE  = 'SF Certified TypeScript 7 Practitioner';
+const STORAGE_KEY = 'ts7_cert_exam';
+
+const _FB_CONFIG = {
+  apiKey:"AIzaSyC-I-IOCq2fCwa471fsD5xOn6SYQSBDp7Q", authDomain:"sfcertification-grafana.firebaseapp.com",
+  projectId:"sfcertification-grafana", storageBucket:"sfcertification-grafana.firebasestorage.app",
+  messagingSenderId:"227322696511", appId:"1:227322696511:web:12e7ced7dd3d45fa06798a"
+};
+if (!window._certApp) window._certApp = firebase.initializeApp(_FB_CONFIG);
+window._certAuth = firebase.auth(window._certApp);
+window._certDb   = firebase.firestore(window._certApp);
+window._learnerEmail = null;
+
+window.pmSignOut = function(){ window._certAuth.signOut(); };
+
+window._certAuth.onAuthStateChanged(function(u){
+  if (u && u.email && u.email.endsWith('@sourcefuse.com')) {
+    window._learnerEmail = u.email;
+    document.getElementById('userEmail').textContent = u.email;
+    refreshAttemptInfo();
+  } else if (u && u.email) {
+    window._certAuth.signOut();
+  } else {
+    window.location.href = 'course-map.html';
+  }
+});
+
+/* ---- attempts: count prior attempts from Firestore to enforce the cap ---- */
+async function priorAttemptCount(email){
+  try {
+    const snap = await window._certDb.collection('courseExamResults').doc(email.toLowerCase().trim())
+      .collection('courses').doc(COURSE_ID).collection('attempts').get();
+    return snap.size;
+  } catch(e){ console.warn('[Cert] attempt count failed:', e.message); return 0; }
+}
+async function refreshAttemptInfo(){
+  const info = document.getElementById('attemptInfo'), btn = document.getElementById('startBtn');
+  if (!window._learnerEmail){ info.textContent = 'Sign in to begin.'; return; }
+  const used = await priorAttemptCount(window._learnerEmail);
+  const left = Math.max(0, MAX_ATTEMPTS - used);
+  if (left <= 0){
+    info.textContent = 'You have used all ' + MAX_ATTEMPTS + ' attempts.';
+    btn.disabled = true;
+  } else {
+    info.textContent = 'Attempts used: ' + used + ' of ' + MAX_ATTEMPTS + ' · ' + left + ' remaining.';
+    btn.disabled = false;
+  }
+}
+
+/* ---- sampling ---- */
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function sampleQuestions(){
+  const bank = (window.QUESTION_BANK||[]).slice();
+  return shuffle(bank).slice(0, Math.min(EXAM_SIZE, bank.length));
+}
+
+/* ---- exam state ---- */
+let EXAM=[], answers={}, timer=null, remaining=TIME_LIMIT, startedAtMs=0;
+
+document.getElementById('startBtn').addEventListener('click', startExam);
+
+function startExam(){
+  EXAM = sampleQuestions(); answers={}; remaining=TIME_LIMIT; startedAtMs=Date.now();
+  document.getElementById('startScreen').classList.add('hidden');
+  document.getElementById('examScreen').classList.remove('hidden');
+  renderQuestions();
+  updateProgress();
+  timer = setInterval(tick, 1000); renderTimer();
+}
+
+function renderQuestions(){
+  const wrap = document.getElementById('questionList'); wrap.innerHTML='';
+  EXAM.forEach(function(q, i){
+    const div = document.createElement('div'); div.className='q';
+    let html = '<div class="qnum">Question '+(i+1)+' of '+EXAM.length+'</div><div class="stem">'+q.stem+'</div>';
+    ['A','B','C','D'].forEach(function(k){
+      if (q.options[k]==null) return;
+      html += '<label class="opt"><input type="radio" name="'+q.id+'" value="'+k+'">'+q.options[k]+'</label>';
+    });
+    div.innerHTML = html; wrap.appendChild(div);
+  });
+  wrap.querySelectorAll('input[type="radio"]').forEach(function(r){
+    r.addEventListener('change', function(){ answers[r.name]=r.value; updateProgress(); });
+  });
+}
+function updateProgress(){
+  document.getElementById('progressCount').textContent = Object.keys(answers).length+' / '+EXAM.length+' answered';
+}
+function tick(){ remaining--; renderTimer(); if (remaining<=0){ clearInterval(timer); finishExam(true); } }
+function renderTimer(){
+  const m=Math.floor(remaining/60), s=remaining%60;
+  const t=document.getElementById('timer');
+  t.textContent = m+':'+String(s).padStart(2,'0');
+  t.classList.toggle('warn', remaining<=300);
+}
+
+document.getElementById('submitExamBtn').addEventListener('click', function(){
+  const unanswered = EXAM.length - Object.keys(answers).length;
+  if (unanswered>0 && !confirm(unanswered+' question(s) are unanswered. Submit anyway?')) return;
+  clearInterval(timer); finishExam(false);
+});
+
+async function finishExam(timeUp){
+  let correct=0; const detail=[];
+  EXAM.forEach(function(q){
+    const picked = answers[q.id]||null;
+    const ok = picked===q.correct; if (ok) correct++;
+    detail.push({ id:q.id, picked:picked, correct:q.correct, ok:ok });
+  });
+  const total=EXAM.length, pct=correct/total, pass=pct>=PASS_MARK;
+  const durationSeconds = Math.round((Date.now()-startedAtMs)/1000);
+
+  const rec = {
+    cert: CERT_TITLE, correct: correct, total: total,
+    pct: Math.round(pct*1000)/1000, pass: pass,
+    submittedAt: new Date().toISOString(),
+    durationSeconds: durationSeconds, timeUp: !!timeUp,
+    answers: Object.assign({}, answers),
+    questionIds: EXAM.map(function(q){return q.id;}),
+    detail: detail
+  };
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ last: rec })); } catch(e){}
+  await certSaveResult(rec);
+  showResult(rec);
+}
+
+async function certSaveResult(rec){
+  try {
+    let email = (window._certAuth.currentUser && window._certAuth.currentUser.email) || window._learnerEmail;
+    if (!email){ console.warn('[Cert] no email — skip write'); return; }
+    const safe = email.toLowerCase().trim();
+    const ref = window._certDb.collection('courseExamResults').doc(safe)
+      .collection('courses').doc(COURSE_ID).collection('attempts');
+    const prior = await ref.get();
+    rec.attemptNumber = prior.size + 1;
+    rec.email = safe; rec.courseId = COURSE_ID;
+    await ref.add(rec);
+    console.log('[Cert] saved attempt', rec.attemptNumber, 'for', safe);
+  } catch(e){ console.warn('[Cert] write failed:', e.message); }
+}
+
+function showResult(rec){
+  document.getElementById('examScreen').classList.add('hidden');
+  document.getElementById('resultScreen').classList.remove('hidden');
+  const badge=document.getElementById('resultBadge');
+  badge.textContent = rec.pass ? '✓ PASSED' : 'NOT PASSED';
+  badge.className = 'result-badge ' + (rec.pass?'pass':'fail');
+  document.getElementById('scoreLine').textContent = rec.correct+' / '+rec.total+'  ('+Math.round(rec.pct*100)+'%)';
+  document.getElementById('resultMsg').textContent = rec.pass
+    ? 'Congratulations — you have earned the '+CERT_TITLE+'. Your result has been recorded.'
+    : 'You did not reach the 70% pass mark this time. Review the modules and try again from the dashboard if you have attempts remaining.'
+      + (rec.timeUp ? ' (The time limit was reached.)' : '');
+}
+</script>
+</body>
+</html>
