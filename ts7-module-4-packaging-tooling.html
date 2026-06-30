@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<!-- ============================================================================
+     SF KNOWLEDGE HUB — TypeScript 7 — MODULE 4
+     Packaging, Tooling & Coexistence
+     moduleKey (EXAMPLE_ID): ts7-module-4-packaging-tooling
+     courseId  (CP_COURSE_ID): Nr2nA1nxBRaFA4fwzA36
+     Tabs: Overview / Tooling / Coexistence lab / Check your knowledge.
+     ============================================================================ -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 4 — Packaging, Tooling & Coexistence — TypeScript 7</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Source+Code+Pro:wght@400;600&family=Source+Serif+4:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue:#1a6eb5; --blue-dark:#0f4c81; --ink:#1f2933; --muted:#647687;
+    --bg:#eef2f8; --card:#ffffff; --border:#d6e0ee; --green:#16a34a; --coral:#c0392b;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'Source Sans 3',system-ui,sans-serif;color:var(--ink);background:var(--bg);line-height:1.65;font-size:17px}
+  .userbar{display:flex;justify-content:space-between;align-items:center;padding:12px 24px;background:var(--card);border-bottom:1px solid var(--border);font-size:14px}
+  .signout{padding:8px 16px;border:none;border-radius:6px;background:var(--blue);color:#fff;cursor:pointer;font-family:inherit}
+  .crumbs{padding:14px 24px;color:var(--muted);font-size:13px}
+  .crumbs a{color:var(--blue);text-decoration:none}
+  .wrap{max-width:860px;margin:0 auto;padding:8px 24px 80px}
+  h1{font-family:'Source Serif 4',Georgia,serif;font-size:30px;margin:8px 0 4px}
+  h3{font-family:'Source Serif 4',Georgia,serif;font-size:19px;margin:22px 0 6px}
+  .eyebrow{font-family:'Source Code Pro',monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--blue)}
+  .tags{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+  .tag{font-family:'Source Code Pro',monospace;font-size:12px;background:#e3edf9;color:var(--blue-dark);padding:5px 10px;border-radius:14px}
+  .tabbar{display:flex;flex-wrap:wrap;gap:4px;border-bottom:2px solid var(--border);margin:22px 0 0}
+  .tabbtn{appearance:none;border:none;background:none;font-family:inherit;font-size:15px;font-weight:600;color:var(--muted);padding:11px 16px;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px}
+  .tabbtn:hover{color:var(--blue)}
+  .tabbtn.active{color:var(--blue-dark);border-bottom-color:var(--blue)}
+  .tabpanel{display:none}
+  .tabpanel.active{display:block;animation:fade .18s ease}
+  @keyframes fade{from{opacity:.4}to{opacity:1}}
+  .concepts{margin:18px 0}
+  .concept{border:1px solid var(--border);border-radius:12px;margin:10px 0;overflow:hidden;background:var(--card)}
+  .concept summary{cursor:pointer;padding:16px 18px;list-style:none;display:flex;align-items:center;gap:12px}
+  .concept summary::-webkit-details-marker{display:none}
+  .concept .chip{font-family:'Source Code Pro',monospace;font-size:12px;background:#e3edf9;color:var(--blue-dark);padding:5px 10px;border-radius:14px;white-space:nowrap}
+  .concept .headline{font-weight:600;color:var(--ink)}
+  .concept .toggle{margin-left:auto;font-family:'Source Code Pro',monospace;color:var(--blue);font-size:18px;line-height:1}
+  .concept[open] .toggle{transform:rotate(45deg)}
+  .concept .concept-body{padding:0 18px 18px}
+  .concept .concept-body p{margin:12px 0}
+  .concept .concept-body p:first-child{margin-top:4px}
+  .concept .concept-body p:last-child{margin-bottom:0}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px;margin:18px 0}
+  .card p{margin:0 0 12px}
+  .card p:last-child{margin-bottom:0}
+  code{font-family:'Source Code Pro',monospace;font-size:.92em;background:#eef3f9;padding:2px 6px;border-radius:5px}
+  pre{background:#0f2233;color:#e6edf3;border-radius:10px;padding:16px 18px;overflow-x:auto;font-family:'Source Code Pro',monospace;font-size:14.5px;line-height:1.6;margin:14px 0}
+  pre code{background:none;color:inherit;padding:0;font-size:inherit}
+  .cmt{color:#7d97ad}
+  .add{color:#7ee787}
+  .del{color:#ffa198}
+  .note{border-left:4px solid var(--blue);background:#f4f8fd;border-radius:0 8px 8px 0;padding:12px 16px;margin:14px 0;font-size:15.5px}
+  .note.warn{border-left-color:#d08a1e;background:#fdf7ec}
+  .note strong{color:var(--blue-dark)}
+  table.tbl{width:100%;border-collapse:collapse;margin:14px 0;font-size:15px}
+  table.tbl th,table.tbl td{border:1px solid var(--border);padding:9px 12px;text-align:left;vertical-align:top}
+  table.tbl th{background:#f4f8fd;font-family:'Source Code Pro',monospace;font-size:12.5px;color:var(--blue-dark)}
+  table.tbl td code{background:#eef3f9}
+  .primer{border:1px solid var(--border);border-radius:12px;margin:18px 0;overflow:hidden}
+  .primer summary{cursor:pointer;padding:14px 18px;background:#f4f8fd;font-weight:600;color:var(--blue-dark);list-style:none}
+  .primer summary::-webkit-details-marker{display:none}
+  .primer summary::before{content:'+ ';font-family:'Source Code Pro',monospace}
+  .primer[open] summary::before{content:'– '}
+  .primer .primer-body{padding:0 18px 16px}
+  .primer .primer-body p{margin:12px 0}
+  .q{margin:16px 0}
+  .q .stem{font-weight:600;margin-bottom:8px}
+  .opt{display:block;border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin:8px 0;cursor:pointer}
+  .opt input{margin-right:10px}
+  .submit-btn{padding:11px 20px;border:none;border-radius:8px;background:var(--blue);color:#fff;font-family:inherit;font-size:15px;cursor:pointer}
+  .submit-btn:disabled{background:#c3d3e6;cursor:not-allowed}
+  .submit-note{font-family:'Source Code Pro',monospace;font-size:13px;color:var(--muted);margin-top:8px}
+  .hidden{display:none}
+  .complete-bar{display:flex;align-items:center;gap:12px;border-top:1px solid var(--border);margin-top:22px;padding-top:18px}
+  .complete-bar.disabled{opacity:.5}
+  .complete-bar .redo-btn{margin-left:auto;display:none;border:1px solid var(--border);background:#fff;border-radius:8px;padding:8px 14px;cursor:pointer;font-family:inherit}
+  .complete-bar .redo-btn.visible{display:inline-block}
+  .complete-bar.done{color:var(--green)}
+  .nav-row{display:flex;justify-content:space-between;margin-top:30px}
+  .nav-btn{padding:12px 18px;border-radius:8px;background:var(--blue);color:#fff;text-decoration:none;font-weight:600}
+  .nav-btn.secondary{background:#fff;color:var(--blue);border:1px solid var(--border)}
+  .advisory{border-left:4px solid #d08a1e;background:#fdf7ec;border-radius:0 8px 8px 0;padding:12px 16px;margin:16px 0;font-size:14.5px;color:var(--ink)}
+  .advisory .when{font-family:'Source Code Pro',monospace;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:#a96c12;display:block;margin-bottom:3px}
+  .advisory code{font-family:'Source Code Pro',monospace;font-size:.92em;background:#f5ead2;padding:2px 6px;border-radius:5px}
+</style>
+</head>
+<body>
+
+<div class="userbar">
+  <span>Welcome, <span id="userEmail">…</span></span>
+  <button class="signout" onclick="pmSignOut()">Sign out</button>
+</div>
+<div class="crumbs">
+  <a href="course-map.html">Back to course dashboard</a> / Module 4 / Packaging, Tooling &amp; Coexistence
+</div>
+
+<div class="wrap">
+  <div class="eyebrow">Module 4</div>
+  <h1>Packaging, Tooling &amp; Coexistence</h1>
+  <div class="tags">
+    <span class="tag">@typescript/typescript6</span>
+    <span class="tag">npm aliases</span>
+    <span class="tag">7.1 API</span>
+  </div>
+
+  <div class="tabbar" id="tabbar">
+    <button class="tabbtn active" data-tab="overview">Overview</button>
+    <button class="tabbtn" data-tab="tooling">Tooling</button>
+    <button class="tabbtn" data-tab="lab">Coexistence lab</button>
+    <button class="tabbtn" data-tab="check">Check your knowledge</button>
+  </div>
+
+  <!-- TAB: OVERVIEW ========================================================= -->
+  <div class="tabpanel active" id="tab-overview">
+    <p style="color:var(--muted);margin:18px 0 4px">The compiler is fast and your build is clean — but your project isn't just a compiler. It's a linter, a formatter, editor plugins, and a web of dependencies that all expect "TypeScript" to mean the package they've always known. This module is about making the new compiler and the existing ecosystem coexist gracefully. Open each idea.</p>
+
+    <div class="concepts">
+      <details class="concept" open>
+        <summary>
+          <span class="chip">package journey</span>
+          <span class="headline">From @typescript/native-preview to typescript</span>
+          <span class="toggle">+</span>
+        </summary>
+        <div class="concept-body">
+          <p>During the preview, the native compiler lives in its own package, <code>@typescript/native-preview</code>, deliberately separate so it can't collide with the <code>typescript</code> package you already have. The binary's name has moved with the phase: nightlies use <code>tsgo</code>, while the 7.0 RC ships a <code>tsc</code> binary.</p>
+          <p>At the stable release, the native compiler takes over the regular <code>typescript</code> package and the familiar <code>tsc</code> command — at which point the preview package retires. So the "journey" is: experiment now under the preview name, and the day stable lands, your <code>typescript</code> dependency simply becomes the fast one. Knowing where you are on that path tells you which package name and binary to expect.</p>
+        </div>
+      </details>
+
+      <details class="concept">
+        <summary>
+          <span class="chip">compat package</span>
+          <span class="headline">@typescript/typescript6 keeps the old API available</span>
+          <span class="toggle">+</span>
+        </summary>
+        <div class="concept-body">
+          <p>Here's the tension. The new <code>tsc</code> wants the <code>typescript</code> name. But lots of tooling <em>imports</em> the <code>typescript</code> package to call its API. If <code>typescript</code> suddenly means the new compiler — whose API isn't stable yet — that tooling breaks.</p>
+          <p>The bridge is a compatibility package, <code>@typescript/typescript6</code>. It re-exports the stable TypeScript 6.0 programmatic API and ships an executable named <code>tsc6</code>, so it can sit alongside 7.0's <code>tsc</code> without a name clash. The pattern: point your <em>tooling</em> at the 6.0 API through this package, while your <em>builds</em> use the fast 7.0 compiler. The Tooling and Coexistence-lab tabs show exactly how.</p>
+        </div>
+      </details>
+
+      <details class="concept">
+        <summary>
+          <span class="chip">7.1 API</span>
+          <span class="headline">Why the compat package is necessary right now</span>
+          <span class="toggle">+</span>
+        </summary>
+        <div class="concept-body">
+          <p>You might ask: why not just have the tooling use the new compiler's API? Because it doesn't exist in stable form yet. TypeScript 7.0 deliberately ships <em>without</em> a stable programmatic API — the interface that tools like typescript-eslint, ts-morph, and custom transformers import. That stable API is targeted for <strong>TypeScript 7.1</strong>, at least several months after 7.0.</p>
+          <p>So the compat package isn't a permanent fixture — it's a bridge across a specific gap in time. Once 7.1 ships a stable API and the ecosystem updates to it, the aliasing dance in this module becomes unnecessary. Until then, it's how you get 7.0's speed without breaking your linter.</p>
+        </div>
+      </details>
+    </div>
+
+    <details class="primer">
+      <summary>Refresh your knowledge?</summary>
+      <div class="primer-body">
+        <p><strong>What a peer dependency is.</strong> Most dependencies are things a package bundles for itself. A <strong>peer dependency</strong> is different: it's a package the tool expects <em>you</em> to provide, and that it will share with you rather than install its own copy. typescript-eslint declares <code>typescript</code> as a peer dependency — it doesn't carry its own TypeScript; it uses whatever <code>typescript</code> is installed in your project. That's exactly why the package <em>name</em> matters so much here: the tool reaches for "the <code>typescript</code> package," and whatever that name resolves to is what it gets.</p>
+
+        <p><strong>How npm version resolution works (briefly).</strong> When several packages each want <code>typescript</code>, npm tries to satisfy them from a single shared copy when their version ranges overlap, and otherwise installs more than one copy nested in the tree. Two different TypeScript versions sneaking into one project is a classic source of confusing, contradictory type errors — the compiler you run and the one your tooling loaded aren't the same. Keeping the resolution deliberate (which the aliases in this module do) avoids that.</p>
+
+        <p><strong>What "re-export the API" means.</strong> The compat package doesn't reimplement TypeScript 6.0 — it <em>re-exports</em> it: it forwards the real 6.0 API under a package name of your choosing. So when a tool imports from <code>typescript</code> and that name is aliased to the compat package, the tool transparently gets the genuine 6.0 API it was written against, even though your <code>tsc</code> command is running 7.0.</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- TAB: TOOLING ========================================================== -->
+  <div class="tabpanel" id="tab-tooling">
+    <div class="advisory">
+      <span class="when">Accurate as of June 2026</span>
+      The package names, alias syntax, and the <code>typescript@rc</code> tag below track the TypeScript 7.0 RC. These details are actively changing as 7.0 moves to stable and 7.1 approaches — confirm against the official 7.0 release notes and the <code>@typescript/typescript6</code> npm page before relying on a specific command.
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">The problem, concretely</h3>
+      <p>Say your project uses typescript-eslint. It imports the <code>typescript</code> package to understand your code. You also want 7.0's fast <code>tsc</code> for builds. If you simply install the 7.0 preview as <code>typescript</code>, the linter loads an API that isn't stable yet and misbehaves. You need <code>typescript</code> (the name your tooling reads) to mean <strong>6.0's API</strong>, while your build command runs <strong>7.0</strong>. npm aliases make one package name point wherever you choose.</p>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">The recommended alias</h3>
+      <p>Point the <code>typescript</code> name at the compat package so all tooling that peer-depends on <code>typescript</code> transparently gets the 6.0 API:</p>
+      <pre><code><span class="cmt"># installs the compat package under the name "typescript"</span>
+npm install -D typescript@npm:@typescript/typescript6</code></pre>
+      <p>Equivalently, in <code>package.json</code>:</p>
+      <pre><code>{
+  "devDependencies": {
+    "typescript": "npm:@typescript/typescript6@^6.0.0"
+  }
+}</code></pre>
+      <div class="note warn"><strong>But there's a catch.</strong> Doing only this leaves you with just a <code>tsc6</code> executable — you've given the <code>typescript</code> name to the 6.0-API compat package, so there's no 7.0 <code>tsc</code> anymore. Tooling is happy, but your fast build command is gone. You need the second half below.</div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">Add 7.0 back under a second name</h3>
+      <p>Install TypeScript 7 under a different alias so <code>npx tsc</code> resolves to it:</p>
+      <pre><code>{
+  "devDependencies": {
+    <span class="cmt">// tooling reads this name → gets the stable 6.0 API</span>
+    "typescript": "npm:@typescript/typescript6@^6.0.0",
+    <span class="cmt">// your build uses 7.0's fast tsc</span>
+    "typescript-7": "npm:typescript@rc"
+  }
+}</code></pre>
+      <p>With both aliases in place: typescript-eslint and friends import <code>typescript</code> and get 6.0's API; <code>npx tsc</code> runs 7.0's fast compiler for your builds and editor integration. As the team put it, it's a textbook parallel change — 6.0 keeps linting tidy, 7.0 makes everything else faster.</p>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">The <code>tsc6</code> binary</h3>
+      <p>The compat package also gives you a <code>tsc6</code> command. That's handy when you explicitly want to run the 6.0 compiler — for the side-by-side comparisons from earlier modules, or to double-check a result against the trusted baseline:</p>
+      <pre><code><span class="cmt"># run the 6.0 compiler explicitly</span>
+npx tsc6 --noEmit
+
+<span class="cmt"># vs. 7.0 for the same project</span>
+npx tsc --noEmit</code></pre>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">When does this go away?</h3>
+      <p>This whole arrangement is temporary. It exists only because 7.0 lacks a stable programmatic API until 7.1. Once 7.1 ships that API and your tools (typescript-eslint, ts-morph, custom transformers) update to support it, you drop the aliases and let <code>typescript</code> simply mean the modern compiler. Treat the aliasing as a bridge, and revisit it when 7.1 lands.</p>
+    </div>
+
+    <details class="primer">
+      <summary>Refresh your knowledge?</summary>
+      <div class="primer-body">
+        <p><strong>What the programmatic API is — Strada vs. Corsa.</strong> Beyond the command line, the compiler exposes a JavaScript <em>programmatic API</em>: functions to parse source into a syntax tree, ask about types, and walk the program. Tools build on it. typescript-eslint uses it to apply lint rules with type information; ts-morph uses it to read and rewrite code; custom transformers use it to modify output. The classic JS-based compiler's API is informally "Strada"; the native Go compiler's is "Corsa." These are different implementations, and the Corsa API isn't stable yet — which is the entire reason a 6.0-API compat package is needed during the transition.</p>
+
+        <p><strong>What a linter and a formatter do.</strong> A <strong>linter</strong> (ESLint, via typescript-eslint for TS) analyses your code for problems and style violations — unused variables, unsafe patterns, rule breaches — and can often auto-fix them. A <strong>formatter</strong> (like Prettier) only rewrites whitespace and layout to a consistent style, without changing meaning. typescript-eslint is the bridge that lets ESLint understand TypeScript types, and to do that it needs the TypeScript API — which is why it, specifically, is the tool most affected by the package transition.</p>
+
+        <p><strong>Why editor plugins are in the same boat.</strong> Many editor features for TypeScript are powered by the same programmatic API (or a server built on it). A plugin written against the Strada API won't automatically work against Corsa. That's why, during the preview, the editor experience comes through a dedicated native-preview extension rather than your existing plugins — a topic Module 5 picks up.</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- TAB: COEXISTENCE LAB ================================================== -->
+  <div class="tabpanel" id="tab-lab">
+    <div class="card">
+      <h3 style="margin-top:0">Goal</h3>
+      <p>Set up one project where the build runs on TypeScript 7.0 but typescript-eslint still resolves the stable 6.0 API — and verify both work. This is the real coexistence pattern you'll use until 7.1.</p>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">Step 1 — A project with a linter</h3>
+      <p>Start from a project that uses ESLint with typescript-eslint (or add it). The key dependency to notice is typescript-eslint, which peer-depends on <code>typescript</code>:</p>
+      <pre><code>npm install -D eslint typescript-eslint</code></pre>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">Step 2 — Wire the two aliases</h3>
+      <p>Edit <code>package.json</code> so <code>typescript</code> points at the compat package and 7.0 lives under a second name:</p>
+      <pre><code>{
+  "devDependencies": {
+    "eslint": "...",
+    "typescript-eslint": "...",
+    <span class="add">"typescript": "npm:@typescript/typescript6@^6.0.0",</span>
+    <span class="add">"typescript-7": "npm:typescript@rc"</span>
+  },
+  "scripts": {
+    <span class="add">"check": "tsc --noEmit",</span>        <span class="cmt">// runs 7.0</span>
+    <span class="add">"lint": "eslint .",</span>            <span class="cmt">// uses 6.0 API via the alias</span>
+    <span class="add">"check:6": "tsc6 --noEmit"</span>       <span class="cmt">// explicit 6.0 baseline</span>
+  }
+}</code></pre>
+      <p>Then do a clean install so the aliases take effect:</p>
+      <pre><code>rm -rf node_modules package-lock.json
+npm install</code></pre>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">Step 3 — Verify the build runs on 7.0</h3>
+      <pre><code>npx tsc --version    <span class="cmt"># expect a 7.0 version string</span>
+npm run check        <span class="cmt"># 7.0 type-check, fast</span></code></pre>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">Step 4 — Verify the linter uses 6.0</h3>
+      <pre><code>npx tsc6 --version   <span class="cmt"># expect a 6.0 version string</span>
+npm run lint         <span class="cmt"># typescript-eslint resolves typescript → 6.0 API, works</span></code></pre>
+      <p>If the lint run completes without "incompatible TypeScript version" or API errors, the coexistence is working: the linter found the 6.0 API it expected under the <code>typescript</code> name, while your build command ran 7.0.</p>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">Step 5 — Troubleshoot a duplicate-version error</h3>
+      <p>If a dependency quietly pulls in a second copy of <code>typescript</code>, you can get contradictory errors. Diagnose and clean up:</p>
+      <pre><code><span class="cmt"># show every typescript copy in the tree and who asked for it</span>
+npm ls typescript
+
+<span class="cmt"># inspect the lockfile to find the offending dependency</span>
+<span class="cmt"># then reinstall cleanly</span>
+rm -rf node_modules package-lock.json
+npm install</code></pre>
+      <div class="note"><strong>Outcome.</strong> One project, two TypeScripts, no conflict: 7.0 for speed on builds and editor, 6.0's API for tooling that needs it. When 7.1 ships a stable API, remove the aliases and let <code>typescript</code> mean 7.x.</div>
+    </div>
+
+    <details class="primer">
+      <summary>Refresh your knowledge?</summary>
+      <div class="primer-body">
+        <p><strong>What an npm alias actually does.</strong> The syntax <code>"name": "npm:&lt;real-package&gt;@&lt;range&gt;"</code> tells npm: "install <em>real-package</em>, but make it available in my project under <em>name</em>." So <code>"typescript": "npm:@typescript/typescript6@^6.0.0"</code> installs the compat package but lets every <code>import ... from "typescript"</code> resolve to it. Aliases are how you satisfy a tool that hard-codes a package name without being bound to whatever that name normally points to. The <code>@rc</code> in <code>npm:typescript@rc</code> is a <em>dist-tag</em> — a named pointer to the current release-candidate version, the same way <code>@latest</code> points at the newest stable.</p>
+
+        <p><strong>What package-lock.json is for.</strong> Your <code>package.json</code> lists version <em>ranges</em> (like <code>^6.0.0</code>). The <strong>lockfile</strong> (<code>package-lock.json</code>) records the <em>exact</em> versions and tree that were actually installed, so every machine and CI run reproduces an identical <code>node_modules</code>. When you change aliases, the lockfile can hold stale resolutions — which is why "delete <code>node_modules</code> and the lockfile, then reinstall" is the reliable reset. It forces npm to resolve the tree fresh against your new aliases.</p>
+
+        <p><strong>Reading <code>npm ls</code>.</strong> <code>npm ls &lt;pkg&gt;</code> prints the dependency tree for that package — every copy present and which dependency required it. If you see two <code>typescript</code> entries at different versions, that's your duplicate: trace the parent that pulled the unwanted one, and either update it or dedupe. It's the fastest way to answer "why do I have two TypeScripts?"</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- TAB: CHECK YOUR KNOWLEDGE ============================================= -->
+  <div class="tabpanel" id="tab-check">
+    <div id="questionsWrap" class="card">
+      <div class="eyebrow">Check your knowledge</div>
+
+      <div class="q">
+        <div class="stem">Q1. Where does the native compiler live during the preview, and where does it go at stable release?</div>
+        <label class="opt"><input type="radio" name="q1" value="A">It stays permanently in <code>@typescript/native-preview</code>; the <code>typescript</code> package is retired.</label>
+        <label class="opt"><input type="radio" name="q1" value="B">In the preview it's <code>@typescript/native-preview</code>; at stable release it takes over the regular <code>typescript</code> package and the <code>tsc</code> command.</label>
+        <label class="opt"><input type="radio" name="q1" value="C">It is only ever distributed inside the VS Code extension.</label>
+      </div>
+
+      <div class="q">
+        <div class="stem">Q2. What does the <code>@typescript/typescript6</code> compatibility package provide?</div>
+        <label class="opt"><input type="radio" name="q2" value="A">A faster build of the 7.0 compiler.</label>
+        <label class="opt"><input type="radio" name="q2" value="B">A re-export of the stable TypeScript 6.0 API plus a <code>tsc6</code> executable, so 6.0's API stays available alongside 7.0's <code>tsc</code>.</label>
+        <label class="opt"><input type="radio" name="q2" value="C">A linter that replaces typescript-eslint.</label>
+      </div>
+
+      <div class="q">
+        <div class="stem">Q3. Why is the compat package necessary right now rather than just pointing tooling at the new compiler's API?</div>
+        <label class="opt"><input type="radio" name="q3" value="A">The new compiler has no command-line interface yet.</label>
+        <label class="opt"><input type="radio" name="q3" value="B">TypeScript 7.0 doesn't ship a stable programmatic API; that's targeted for 7.1, so tools like typescript-eslint still need the 6.0 API.</label>
+        <label class="opt"><input type="radio" name="q3" value="C">npm cannot install two packages at once.</label>
+      </div>
+
+      <div class="q">
+        <div class="stem">Q4. You add only <code>"typescript": "npm:@typescript/typescript6@^6.0.0"</code> to devDependencies. What's the catch?</div>
+        <label class="opt"><input type="radio" name="q4" value="A">Nothing — this fully sets up both 6.0 and 7.0.</label>
+        <label class="opt"><input type="radio" name="q4" value="B">You're left with only a <code>tsc6</code> executable; you must add a second alias (e.g. <code>typescript-7</code>) to get 7.0's <code>tsc</code> back.</label>
+        <label class="opt"><input type="radio" name="q4" value="C">It uninstalls ESLint.</label>
+      </div>
+
+      <div class="q">
+        <div class="stem">Q5. What does an npm alias like <code>"typescript": "npm:@typescript/typescript6@^6.0.0"</code> accomplish?</div>
+        <label class="opt"><input type="radio" name="q5" value="A">It installs the compat package but makes it resolvable under the name <code>typescript</code>, so tools importing <code>typescript</code> transparently get the 6.0 API.</label>
+        <label class="opt"><input type="radio" name="q5" value="B">It renames your project to "typescript".</label>
+        <label class="opt"><input type="radio" name="q5" value="C">It deletes the real typescript package globally.</label>
+      </div>
+
+      <div class="q">
+        <div class="stem">Q6. A dependency quietly pulls in a second copy of <code>typescript</code> and you get contradictory errors. What's a good first diagnostic?</div>
+        <label class="opt"><input type="radio" name="q6" value="A">Reinstall the operating system.</label>
+        <label class="opt"><input type="radio" name="q6" value="B">Run <code>npm ls typescript</code> to see every copy and which dependency required it, then dedupe or reinstall cleanly.</label>
+        <label class="opt"><input type="radio" name="q6" value="C">Delete the tsconfig.json.</label>
+      </div>
+
+      <button class="submit-btn" id="submitAnswersBtn" disabled>Submit answers</button>
+      <div class="submit-note" id="submitNote">Select an answer for each question to submit.</div>
+    </div>
+
+    <div id="submittedWrap" class="card hidden">
+      <p>Answers submitted. Review complete — mark this module as complete below.</p>
+    </div>
+
+    <div class="complete-bar disabled" id="completeBar">
+      <input type="checkbox" id="completeCb" disabled>
+      <label for="completeCb" id="completeLabel">Answer all questions to unlock</label>
+      <button class="redo-btn" id="redoBtn">&#x21BA; Redo module</button>
+    </div>
+  </div>
+
+  <div class="nav-row">
+    <a class="nav-btn secondary" href="ts7-module-3-breaking-changes-defaults.html">← Module 3</a>
+    <a class="nav-btn" href="ts7-module-5-editor-rollout.html">Module 5: Editor &amp; Rollout →</a>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script>
+const EXAMPLE_ID = 'ts7-module-4-packaging-tooling';
+const QIDS = ['q1','q2','q3','q4','q5','q6'];
+const CORRECT = { q1:'B', q2:'B', q3:'B', q4:'B', q5:'A', q6:'B' };
+
+document.getElementById('tabbar').addEventListener('click', function(e){
+  const btn = e.target.closest('.tabbtn'); if(!btn) return;
+  const tab = btn.getAttribute('data-tab');
+  document.querySelectorAll('.tabbtn').forEach(function(b){ b.classList.toggle('active', b===btn); });
+  document.querySelectorAll('.tabpanel').forEach(function(p){ p.classList.toggle('active', p.id==='tab-'+tab); });
+  window.scrollTo({top:0,behavior:'smooth'});
+});
+
+const _FB_CONFIG = {
+  apiKey: "AIzaSyC-I-IOCq2fCwa471fsD5xOn6SYQSBDp7Q",
+  authDomain: "sfcertification-grafana.firebaseapp.com",
+  projectId: "sfcertification-grafana",
+  storageBucket: "sfcertification-grafana.firebasestorage.app",
+  messagingSenderId: "227322696511",
+  appId: "1:227322696511:web:12e7ced7dd3d45fa06798a"
+};
+if (!window._fbApp) window._fbApp = firebase.initializeApp(_FB_CONFIG);
+const _auth = firebase.auth(window._fbApp);
+window._learnerUid = 'anon'; window._learnerEmail = null;
+
+window.pmLearnerKey = function(exampleId){ return 'pm_learner_' + window._learnerUid + '_' + exampleId; };
+function loadState(){ try { return JSON.parse(localStorage.getItem(window.pmLearnerKey(EXAMPLE_ID))) || {}; } catch(e){ return {}; } }
+function saveState(s){ localStorage.setItem(window.pmLearnerKey(EXAMPLE_ID), JSON.stringify(s)); }
+
+window.pmSignOut = function(){ _auth.signOut(); };
+
+_auth.onAuthStateChanged(function(user){
+  if (user && user.email && user.email.endsWith('@sourcefuse.com')) {
+    window._learnerUid = user.uid; window._learnerEmail = user.email;
+    document.getElementById('userEmail').textContent = user.email;
+    document.dispatchEvent(new Event('learnerReady'));
+  } else if (user && user.email && !user.email.endsWith('@sourcefuse.com')) {
+    _auth.signOut();
+  } else {
+    window.location.href = 'course-map.html';
+  }
+});
+
+document.addEventListener('learnerReady', function() {
+  const state = loadState();
+  cpEnsureModuleStarted();
+
+  const completeCb = document.getElementById('completeCb');
+  if (completeCb) {
+    completeCb.addEventListener('change', function() {
+      if (!completeCb.checked) return;
+      const s = loadState(); s.complete = true; saveState(s);
+      activateCompleteBar(true);
+    });
+  }
+  const redoBtn = document.getElementById('redoBtn');
+  if (redoBtn) redoBtn.addEventListener('click', function() {
+    localStorage.removeItem(window.pmLearnerKey(EXAMPLE_ID));
+    document.getElementById('questionsWrap').classList.remove('hidden');
+    document.getElementById('submittedWrap').classList.add('hidden');
+    document.querySelectorAll('.opt input[type="radio"]').forEach(function(r){ r.checked = false; });
+    document.getElementById('submitAnswersBtn').disabled = true;
+    document.getElementById('submitNote').textContent = 'Select an answer for each question to submit.';
+    activateCompleteBar(false);
+  });
+
+  if (state.complete) { showSubmittedState(); activateCompleteBar(true); return; }
+  if (state.submittedAt) { showSubmittedState(); activateCompleteBar(false); return; }
+
+  document.querySelectorAll('.opt input[type="radio"]').forEach(function(radio){
+    radio.addEventListener('change', checkAllAnswered);
+  });
+  document.getElementById('submitAnswersBtn').addEventListener('click', submitAnswers);
+});
+
+function checkAllAnswered() {
+  const all = QIDS.every(n => document.querySelector('input[name="'+n+'"]:checked'));
+  document.getElementById('submitAnswersBtn').disabled = !all;
+  document.getElementById('submitNote').textContent = all ? 'Ready to submit.' : 'Select an answer for each question to submit.';
+}
+
+function submitAnswers() {
+  const answers = {};
+  QIDS.forEach(function(n){
+    const v = document.querySelector('input[name="'+n+'"]:checked'); if (v) answers[n] = v.value;
+  });
+  let correct = 0;
+  Object.keys(CORRECT).forEach(function(n){ if (answers[n] === CORRECT[n]) correct++; });
+  const s = loadState();
+  s.exampleId = EXAMPLE_ID; s.answers = answers; s.correct = correct;
+  s.submittedAt = new Date().toISOString();
+  saveState(s);
+  showSubmittedState();
+  activateCompleteBar(false);
+}
+
+function showSubmittedState() {
+  document.getElementById('questionsWrap').classList.add('hidden');
+  document.getElementById('submittedWrap').classList.remove('hidden');
+}
+
+function activateCompleteBar(isDone) {
+  const bar = document.getElementById('completeBar');
+  const cb = document.getElementById('completeCb');
+  const label = document.getElementById('completeLabel');
+  const redo = document.getElementById('redoBtn');
+  if (!bar) return;
+  if (isDone) {
+    bar.className = 'complete-bar done';
+    cb.disabled = true; cb.checked = true;
+    label.textContent = '✓ Module complete';
+    if (redo) redo.classList.add('visible');
+    cpWriteModuleComplete();
+  } else {
+    bar.className = 'complete-bar';
+    cb.disabled = false; cb.checked = false;
+    label.textContent = 'Mark module as complete';
+    if (redo) redo.classList.remove('visible');
+  }
+}
+</script>
+
+<!-- ===== SHARED courseProgress v2 wiring (inlined) ========================= -->
+<script>
+var CP_COURSE_ID = 'Nr2nA1nxBRaFA4fwzA36';
+var THIS_MODULE_KEY = EXAMPLE_ID;
+var CP_MODULE_IDS = [
+  'ts7-module-1-why-native-compiler',
+  'ts7-module-2-performance-parallelism',
+  'ts7-module-3-breaking-changes-defaults',
+  'ts7-module-4-packaging-tooling',
+  'ts7-module-5-editor-rollout'
+];
+
+function cpNow() {
+  var d = new Date();
+  var pad = function(n){ return String(n).padStart(2,'0'); };
+  return {
+    date: d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()),
+    time: pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds()),
+    ms:   d.getTime()
+  };
+}
+function cpFmtDuration(ms) {
+  if (ms == null || ms < 0) return null;
+  var s = Math.floor(ms/1000), h = Math.floor(s/3600), m = Math.floor((s%3600)/60), sec = s%60;
+  if (h > 0) return h+'h '+m+'m '+sec+'s';
+  if (m > 0) return m+'m '+sec+'s';
+  return sec+'s';
+}
+function cpDb() { return firebase.firestore(window._fbApp); }
+function cpDocRef() { return cpDb().collection('courseProgress').doc(window._learnerUid); }
+function cpReady() { return window._fbApp && window._learnerUid && window._learnerUid !== 'anon'; }
+
+/* Set module start once (call on page load / learnerReady). Never overwrites
+   an existing start. Also stamps courseStartedOn/At once for the whole course. */
+function cpEnsureModuleStarted() {
+  if (!cpReady()) return;
+  var ref = cpDocRef();
+  ref.get().then(function(snap){
+    var data = snap.exists ? (snap.data() || {}) : {};
+    var course = (data.courses && data.courses[CP_COURSE_ID]) || {};
+    var mods = course.modules || {};
+    var t = cpNow();
+    var update = { email: window._learnerEmail || null, name: window._learnerEmail || null, courses: {} };
+    update.courses[CP_COURSE_ID] = { moduleInProgress: THIS_MODULE_KEY, modules: {} };
+    if (!mods[THIS_MODULE_KEY] || !mods[THIS_MODULE_KEY].startedOn) {
+      update.courses[CP_COURSE_ID].modules[THIS_MODULE_KEY] = { startedOn: t.date, startedAt: t.time };
+    }
+    // Stamp course start once.
+    if (!course.courseStartedOn) { update.courses[CP_COURSE_ID].courseStartedOn = t.date; update.courses[CP_COURSE_ID].courseStartedAt = t.time; }
+    ref.set(update, { merge: true })
+       .catch(function(e){ console.warn('[courseProgress] start write failed:', e.message); });
+  }).catch(function(e){ console.warn('[courseProgress] start read failed:', e.message); });
+}
+
+/* On completion: write module completion + timeTaken; if all modules done,
+   close the course. Call from the "mark complete" handler. */
+function cpWriteModuleComplete() {
+  if (!cpReady()) return;
+  var ref = cpDocRef();
+  ref.get().then(function(snap){
+    var data = snap.exists ? (snap.data() || {}) : {};
+    var course = (data.courses && data.courses[CP_COURSE_ID]) || {};
+    var mods = course.modules || {};
+    var t = cpNow();
+    var startMs = null;
+    var mEntry = mods[THIS_MODULE_KEY];
+    if (mEntry && mEntry.startedOn && mEntry.startedAt) {
+      startMs = new Date(mEntry.startedOn + 'T' + mEntry.startedAt).getTime();
+    }
+    var moduleTimeTaken = startMs != null ? cpFmtDuration(t.ms - startMs) : null;
+
+    var courseUpdate = { modules: {} };
+    // Preserve an existing real completion; otherwise stamp now.
+    var existing = mods[THIS_MODULE_KEY] || {};
+    courseUpdate.modules[THIS_MODULE_KEY] = {
+      completedOn: existing.completedOn || t.date,
+      completedAt: existing.completedAt || t.time,
+      timeTaken:   existing.timeTaken   || moduleTimeTaken
+    };
+    if (course.moduleInProgress === THIS_MODULE_KEY) courseUpdate.moduleInProgress = null;
+
+    var completedCount = 0;
+    CP_MODULE_IDS.forEach(function(id){
+      if (id === THIS_MODULE_KEY) { completedCount++; return; }
+      if (mods[id] && mods[id].completedOn) completedCount++;
+    });
+    if (completedCount >= CP_MODULE_IDS.length && !course.courseCompletedOn) {
+      courseUpdate.courseCompletedOn = t.date;
+      courseUpdate.courseCompletedAt = t.time;
+      if (course.courseStartedOn && course.courseStartedAt) {
+        var cStart = new Date(course.courseStartedOn + 'T' + course.courseStartedAt).getTime();
+        courseUpdate.timeTaken = cpFmtDuration(t.ms - cStart);
+      }
+    }
+    var update = { email: window._learnerEmail || null, name: window._learnerEmail || null, courses: {} };
+    update.courses[CP_COURSE_ID] = courseUpdate;
+    ref.set(update, { merge: true })
+       .catch(function(e){ console.warn('[courseProgress] complete write failed:', e.message); });
+  }).catch(function(e){ console.warn('[courseProgress] complete read failed:', e.message); });
+}
+</script>
+</body>
+</html>
