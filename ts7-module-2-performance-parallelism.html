@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<!-- ============================================================================
+     SF KNOWLEDGE HUB — TypeScript 7 — MODULE 2
+     Performance & Parallelism
+     moduleKey (EXAMPLE_ID): ts7-module-2-performance-parallelism
+     courseId  (CP_COURSE_ID): Nr2nA1nxBRaFA4fwzA36
+     Tabs: Overview / The controls / Benchmark lab / Check your knowledge.
+     ============================================================================ -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 2 — Performance & Parallelism — TypeScript 7</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Source+Code+Pro:wght@400;600&family=Source+Serif+4:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue:#1a6eb5; --blue-dark:#0f4c81; --ink:#1f2933; --muted:#647687;
+    --bg:#eef2f8; --card:#ffffff; --border:#d6e0ee; --green:#16a34a; --coral:#c0392b;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'Source Sans 3',system-ui,sans-serif;color:var(--ink);background:var(--bg);line-height:1.65;font-size:17px}
+  .userbar{display:flex;justify-content:space-between;align-items:center;padding:12px 24px;background:var(--card);border-bottom:1px solid var(--border);font-size:14px}
+  .signout{padding:8px 16px;border:none;border-radius:6px;background:var(--blue);color:#fff;cursor:pointer;font-family:inherit}
+  .crumbs{padding:14px 24px;color:var(--muted);font-size:13px}
+  .crumbs a{color:var(--blue);text-decoration:none}
+  .wrap{max-width:860px;margin:0 auto;padding:8px 24px 80px}
+  h1{font-family:'Source Serif 4',Georgia,serif;font-size:30px;margin:8px 0 4px}
+  h3{font-family:'Source Serif 4',Georgia,serif;font-size:19px;margin:22px 0 6px}
+  .eyebrow{font-family:'Source Code Pro',monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--blue)}
+  .tags{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+  .tag{font-family:'Source Code Pro',monospace;font-size:12px;background:#e3edf9;color:var(--blue-dark);padding:5px 10px;border-radius:14px}
+  .tabbar{display:flex;flex-wrap:wrap;gap:4px;border-bottom:2px solid var(--border);margin:22px 0 0}
+  .tabbtn{appearance:none;border:none;background:none;font-family:inherit;font-size:15px;font-weight:600;color:var(--muted);padding:11px 16px;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px}
+  .tabbtn:hover{color:var(--blue)}
+  .tabbtn.active{color:var(--blue-dark);border-bottom-color:var(--blue)}
+  .tabpanel{display:none}
+  .tabpanel.active{display:block;animation:fade .18s ease}
+  @keyframes fade{from{opacity:.4}to{opacity:1}}
+  .concepts{margin:18px 0}
+  .concept{border:1px solid var(--border);border-radius:12px;margin:10px 0;overflow:hidden;background:var(--card)}
+  .concept summary{cursor:pointer;padding:16px 18px;list-style:none;display:flex;align-items:center;gap:12px}
+  .concept summary::-webkit-details-marker{display:none}
+  .concept .chip{font-family:'Source Code Pro',monospace;font-size:12px;background:#e3edf9;color:var(--blue-dark);padding:5px 10px;border-radius:14px;white-space:nowrap}
+  .concept .headline{font-weight:600;color:var(--ink)}
+  .concept .toggle{margin-left:auto;font-family:'Source Code Pro',monospace;color:var(--blue);font-size:18px;line-height:1}
+  .concept[open] .toggle{transform:rotate(45deg)}
+  .concept .concept-body{padding:0 18px 18px}
+  .concept .concept-body p{margin:12px 0}
+  .concept .concept-body p:first-child{margin-top:4px}
+  .concept .concept-body p:last-child{margin-bottom:0}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px;margin:18px 0}
+  .card p{margin:0 0 12px}
+  .card p:last-child{margin-bottom:0}
+  code{font-family:'Source Code Pro',monospace;font-size:.92em;background:#eef3f9;padding:2px 6px;border-radius:5px}
+  pre{background:#0f2233;color:#e6edf3;border-radius:10px;padding:16px 18px;overflow-x:auto;font-family:'Source Code Pro',monospace;font-size:14.5px;line-height:1.6;margin:14px 0}
+  pre code{background:none;color:inherit;padding:0;font-size:inherit}
+  .cmt{color:#7d97ad}
+  .note{border-left:4px solid var(--blue);background:#f4f8fd;border-radius:0 8px 8px 0;padding:12px 16px;margin:14px 0;font-size:15.5px}
+  .note.warn{border-left-color:#d08a1e;background:#fdf7ec}
+  .note strong{color:var(--blue-dark)}
+  table.tbl{width:100%;border-collapse:collapse;margin:14px 0;font-size:15px}
+  table.tbl th,table.tbl td{border:1px solid var(--border);padding:9px 12px;text-align:left}
+  table.tbl th{background:#f4f8fd;font-family:'Source Code Pro',monospace;font-size:12.5px;color:var(--blue-dark)}
+  table.tbl td code{background:#eef3f9}
+  .primer{border:1px solid var(--border);border-radius:12px;margin:18px 0;overflow:hidden}
+  .primer summary{cursor:pointer;padding:14px 18px;background:#f4f8fd;font-weight:600;color:var(--blue-dark);list-style:none}
+  .primer summary::-webkit-details-marker{display:none}
+  .primer summary::before{content:'+ ';font-family:'Source Code Pro',monospace}
+  .primer[open] summary::before{content:'– '}
+  .primer .primer-body{padding:0 18px 16px}
+  .primer .primer-body p{margin:12px 0}
+  .q{margin:16px 0}
+  .q .stem{font-weight:600;margin-bottom:8px}
+  .opt{display:block;border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin:8px 0;cursor:pointer}
+  .opt input{margin-right:10px}
+  .submit-btn{padding:11px 20px;border:none;border-radius:8px;background:var(--blue);color:#fff;font-family:inherit;font-size:15px;cursor:pointer}
+  .submit-btn:disabled{background:#c3d3e6;cursor:not-allowed}
+  .submit-note{font-family:'Source Code Pro',monospace;font-size:13px;color:var(--muted);margin-top:8px}
+  .hidden{display:none}
+  .complete-bar{display:flex;align-items:center;gap:12px;border-top:1px solid var(--border);margin-top:22px;padding-top:18px}
+  .complete-bar.disabled{opacity:.5}
+  .complete-bar .redo-btn{margin-left:auto;display:none;border:1px solid var(--border);background:#fff;border-radius:8px;padding:8px 14px;cursor:pointer;font-family:inherit}
+  .complete-bar .redo-btn.visible{display:inline-block}
+  .complete-bar.done{color:var(--green)}
+  .nav-row{display:flex;justify-content:space-between;margin-top:30px}
+  .nav-btn{padding:12px 18px;border-radius:8px;background:var(--blue);color:#fff;text-decoration:none;font-weight:600}
+  .nav-btn.secondary{background:#fff;color:var(--blue);border:1px solid var(--border)}
+  .advisory{border-left:4px solid #d08a1e;background:#fdf7ec;border-radius:0 8px 8px 0;padding:12px 16px;margin:16px 0;font-size:14px;color:var(--ink)}
+  .advisory .when{font-family:'Source Code Pro',monospace;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:#a96c12;display:block;margin-bottom:3px}
+  .advisory code{font-family:'Source Code Pro',monospace;font-size:.92em;background:#f5ead2;padding:2px 6px;border-radius:5px}
+</style>
+</head>
+<body>
+
+<div class="userbar">
+  <span>Welcome, <span id="userEmail">…</span></span>
+  <button class="signout" onclick="pmSignOut()">Sign out</button>
+</div>
+<div class="crumbs">
+  <a href="course-map.html">Back to course dashboard</a> / Module 2 / Performance &amp; Parallelism
+</div>
+
+<div class="wrap">
+  <div class="eyebrow">Module 2</div>
+  <h1>Performance &amp; Parallelism</h1>
+  <div class="tags">
+    <span class="tag">--checkers</span>
+    <span class="tag">--builders</span>
+    <span class="tag">--singleThreaded</span>
+  </div>
+
+  <div class="tabbar" id="tabbar">
+    <button class="tabbtn active" data-tab="overview">Overview</button>
+    <button class="tabbtn" data-tab="controls">The controls</button>
+    <button class="tabbtn" data-tab="lab">Benchmark lab</button>
+    <button class="tabbtn" data-tab="check">Check your knowledge</button>
+  </div>
+
+  <!-- TAB: OVERVIEW ========================================================= -->
+  <div class="tabpanel active" id="tab-overview">
+    <p style="color:var(--muted);margin:18px 0 4px">Module 1 established that TypeScript 7 is the same language on a faster engine. This module explains <em>where</em> the speed comes from — and gives you the controls to tune it. Open each idea.</p>
+
+    <div class="concepts">
+      <details class="concept" open>
+        <summary>
+          <span class="chip">native speed</span>
+          <span class="headline">Half the win: no JavaScript runtime overhead</span>
+          <span class="toggle">+</span>
+        </summary>
+        <div class="concept-body">
+          <p>The old compiler was itself a TypeScript program compiled to JavaScript, so it ran on Node.js and inherited the JavaScript engine's just-in-time warm-up and startup costs. The native compiler runs as a compiled binary instead. Roughly half of the overall ~10× improvement comes from this alone: native code execution with no JIT overhead and no Node.js startup tax.</p>
+          <p>This part of the speed-up is automatic. You get it simply by running the native compiler — there is nothing to configure. The other half is parallelism, which is where the controls in this module come in.</p>
+        </div>
+      </details>
+
+      <details class="concept">
+        <summary>
+          <span class="chip">parallelism</span>
+          <span class="headline">The other half: doing many things at once</span>
+          <span class="toggle">+</span>
+        </summary>
+        <div class="concept-body">
+          <p>The single-threaded JavaScript runtime had to do the compiler's work one step at a time. Go made it practical to run parts of the build concurrently. TypeScript 7 now parallelises parsing, type-checking, and emitting.</p>
+          <p>Parsing and emitting are the easy wins: each file can largely be handled independently, so this scales well with codebase size at low overhead. Type-checking is harder — files share type information from their dependencies and the global scope, so the checkers can't run in complete isolation without wasting computation and memory. TypeScript 7 splits type-checking across a configurable number of <em>worker</em> processes (called "checkers"), each with its own view of the program, dividing the work while still producing the same answers.</p>
+        </div>
+      </details>
+
+      <details class="concept">
+        <summary>
+          <span class="chip">10× claim</span>
+          <span class="headline">How to read the speed numbers honestly</span>
+          <span class="toggle">+</span>
+        </summary>
+        <div class="concept-body">
+          <p>The headline figure — "often about 10× faster than TypeScript 6.0" — is Microsoft's own measurement on Microsoft's own hardware and codebases. It is representative, not a guarantee. Your speed-up depends on your codebase shape, your machine's core count and memory, cache warmth, and how much of your build is type-checking versus emit.</p>
+          <p>A realistic expectation: large codebases on many-core machines see the biggest gains; small projects see less dramatic numbers because there is less work to parallelise and the fixed overhead is proportionally larger. The honest way to know your number is to measure it on your own project — which is exactly what the Benchmark lab tab walks you through.</p>
+        </div>
+      </details>
+    </div>
+
+    <details class="primer">
+      <summary>Refresh your knowledge?</summary>
+      <div class="primer-body">
+        <p><strong>Concurrency vs. parallelism.</strong> These words are often used loosely, but the distinction matters here. <strong>Concurrency</strong> is structuring a program so multiple tasks are <em>in progress</em> over the same period — they may be interleaved on a single worker. <strong>Parallelism</strong> is multiple tasks literally running <em>at the same instant</em> on multiple workers. TypeScript 7 does real parallelism: separate workers crunching different parts of your program simultaneously.</p>
+
+        <p><strong>What a "thread" or "worker" is.</strong> A <strong>thread</strong> is an independent stream of execution within a program. Multiple threads can run on multiple CPU cores at once. The old JavaScript-based compiler was effectively single-threaded for this work: Node.js worker threads exist, but they communicate by copying serialized messages between isolated engine instances, which is too costly for the tightly-shared data a type-checker needs. Go's lightweight threads (goroutines) share the same memory directly, so several of them can read the same symbol table at once without copying. That shared-memory model is what made parallel type-checking practical — and it's why the port chose Go.</p>
+
+        <p><strong>Why more workers isn't always faster.</strong> Splitting work across workers has a cost: coordinating them, and giving each its own slice of memory. Past a certain point — especially on a small project or a machine with few cores — adding workers stops helping and can even slow things slightly, because the coordination overhead outweighs the work saved. This is why the defaults are modest and why benchmarking your own project beats assuming "more is better."</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- TAB: THE CONTROLS ===================================================== -->
+  <div class="tabpanel" id="tab-controls">
+    <div class="advisory">
+      <span class="when">Accurate as of June 2026</span>
+      The flag names and defaults below track the TypeScript 7.0 RC. Preview details can shift — if a flag behaves differently, check the official TypeScript site and the <code>@typescript/native-preview</code> npm page.
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">The three parallelism flags at a glance</h3>
+      <p>Native code speed is automatic. Parallelism is the part you can tune, and the RC exposes three flags to control it. The defaults are sensible for most development machines; you mainly reach for these when tuning a CI runner with a known core count and memory ceiling.</p>
+      <table class="tbl">
+        <tr><th>Flag</th><th>Default</th><th>What it does</th></tr>
+        <tr><td><code>--checkers</code></td><td>4</td><td>Number of parallel type-checking workers.</td></tr>
+        <tr><td><code>--builders</code></td><td>—</td><td>Number of project-reference builds run in parallel (monorepos).</td></tr>
+        <tr><td><code>--singleThreaded</code></td><td>off</td><td>Disables parallelism entirely (one thread for everything).</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0"><code>--checkers</code> — type-checking workers</h3>
+      <p>This sets how many type-checking workers run at once. The default is 4, which balances speed against memory on a typical development machine. Raising it can speed up larger codebases on machines with more cores — at the cost of proportionally higher memory use. On a constrained CI runner with few cores, lowering it avoids overhead that would otherwise slow you down.</p>
+      <pre><code><span class="cmt"># more workers for a big codebase on a beefy machine</span>
+npx tsc --noEmit --checkers 8
+
+<span class="cmt"># fewer workers for a small / low-core CI runner</span>
+npx tsc --noEmit --checkers 2</code></pre>
+      <div class="note warn"><strong>Determinism caveat.</strong> In rare cases, varying the number of <code>--checkers</code> can surface order-dependent results. If your team wants byte-for-byte identical output everywhere, fix <code>--checkers</code> to the same number across all build environments. (This relates to the <code>stableTypeOrdering</code> setting covered in Module 3.)</div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0"><code>--builders</code> — parallel project-reference builds</h3>
+      <p>A monorepo often splits into many smaller TypeScript projects wired together with project references. TypeScript 7 can build several of those projects at once, and <code>--builders</code> sets how many run in parallel. Because the project dependency graph is declared explicitly in your <code>tsconfig.json</code>, partitioning the work is straightforward — so unlike <code>--checkers</code>, varying <code>--builders</code> does <strong>not</strong> change your results.</p>
+      <pre><code><span class="cmt"># build a monorepo, several projects at a time</span>
+npx tsc --build --builders 4</code></pre>
+      <div class="note warn"><strong>It multiplies with <code>--checkers</code>.</strong> Each builder spins up its own checkers, so the two compound. <code>--checkers 4 --builders 4</code> can launch up to <strong>16</strong> type-checkers at once — appropriate on a many-core build server, but excessive on a standard laptop, where it can exhaust memory. Set both deliberately for your hardware.</div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0"><code>--singleThreaded</code> — turn parallelism off</h3>
+      <p>This caps type-checking to a single worker and also forces parsing and emitting onto one thread. You give up the parallel half of the speed-up (you keep the native-code half). It's not for everyday use — it's a deliberate tool for specific situations: debugging a confusing result, making a clean apples-to-apples comparison against TypeScript 6.0, orchestrating parallelism yourself from the outside, or running where memory is very tight.</p>
+      <pre><code><span class="cmt"># deterministic, low-memory, single-threaded run</span>
+npx tsc --noEmit --singleThreaded</code></pre>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">The rebuilt <code>--watch</code> mode</h3>
+      <p>Watch mode — recompiling automatically when files change — was also rebuilt. The old approach leaned on polling, which became expensive on large projects with big <code>node_modules</code> directories. TypeScript 7's watcher is built on a Go port of the Parcel bundler's file-watcher (the same lineage that underpins file-watching in VS Code), giving more resource-efficient watching across platforms.</p>
+      <pre><code><span class="cmt"># recompile on save, efficiently</span>
+npx tsc -w</code></pre>
+    </div>
+
+    <details class="primer">
+      <summary>Refresh your knowledge?</summary>
+      <div class="primer-body">
+        <p><strong>What a CPU core is.</strong> A modern processor has multiple <strong>cores</strong> — independent units that each execute instructions. Four cores can genuinely do four things at the same instant. (With "hyper-threading"/SMT, the operating system may report more logical cores than physical ones; for our purposes, think in terms of how many independent streams of work your machine can truly run at once.) When TypeScript 7 starts 4 checker workers, it's aiming to keep up to 4 cores busy.</p>
+
+        <p><strong>How more workers help — up to a point.</strong> If you have 8 idle cores and a big type-checking job, spreading it across 8 workers can finish far faster than one worker doing it all. But two things cap the benefit. First, you can't use more cores than you physically have — 16 workers on a 4-core laptop just take turns, adding coordination cost for no gain. Second, each worker uses memory; on a machine that's short on RAM, too many workers cause swapping that's slower than running fewer. The practical rule: match worker count to the machine, and measure rather than guess.</p>
+
+        <p><strong>Finding your machine's core count.</strong> It helps to know what you're working with before tuning <code>--checkers</code>:</p>
+        <pre><code><span class="cmt"># macOS / Linux</span>
+nproc                 <span class="cmt"># Linux: prints logical core count</span>
+sysctl -n hw.ncpu     <span class="cmt"># macOS: logical cores</span>
+
+<span class="cmt"># cross-platform, via Node</span>
+node -e "console.log(require('os').cpus().length)"</code></pre>
+        <p>A common starting point is to leave <code>--checkers</code> at its default of 4 and only adjust once a benchmark shows it helps.</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- TAB: BENCHMARK LAB ==================================================== -->
+  <div class="tabpanel" id="tab-lab">
+    <div class="card">
+      <h3 style="margin-top:0">Goal</h3>
+      <p>Measure the speed-up on a real codebase yourself, then see how <code>--checkers</code> affects it. You'll end with your own before/after number — the only number that actually describes your project. Use a medium-or-larger TypeScript project you already have (the more files, the clearer the effect).</p>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">Step 1 — Install both compilers side by side</h3>
+      <p>You need TypeScript 6.0 (the baseline) and the native preview together. This is the side-by-side setup from Module 1.</p>
+      <pre><code>npm install -D typescript @typescript/native-preview</code></pre>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">Step 2 — Get a baseline with TypeScript 6.0</h3>
+      <p>Run a type-check-only pass (no emit, so we isolate checking speed) and ask the compiler for its own diagnostics, which include a total time:</p>
+      <pre><code><span class="cmt"># classic compiler, by its package bin path to avoid name clashes</span>
+node ./node_modules/typescript/bin/tsc --noEmit --extendedDiagnostics</code></pre>
+      <p>Note the <code>Total time</code> line near the bottom. Run it twice and use the second run — the first warms the filesystem cache, and you want a warm-cache number for a fair comparison.</p>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">Step 3 — Run the native compiler</h3>
+      <p>Now the same check with the native preview. (On the RC the binary is <code>tsc</code>; on older nightlies it's <code>tsgo</code>.)</p>
+      <pre><code>npx tsc --noEmit --extendedDiagnostics</code></pre>
+      <p>Compare the <code>Total time</code> to your baseline. Divide the 6.0 time by the 7.0 time to get your speed-up ratio. Don't be surprised if it differs from "10×" in either direction — that figure was measured on a very large codebase.</p>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">Step 4 — Sweep <code>--checkers</code></h3>
+      <p>See how worker count changes things on <em>your</em> project and <em>your</em> machine. Run each and record the time:</p>
+      <pre><code>npx tsc --noEmit --extendedDiagnostics --checkers 1
+npx tsc --noEmit --extendedDiagnostics --checkers 2
+npx tsc --noEmit --extendedDiagnostics --checkers 4   <span class="cmt"># default</span>
+npx tsc --noEmit --extendedDiagnostics --checkers 8</code></pre>
+      <p>Fill in a small table as you go:</p>
+      <table class="tbl">
+        <tr><th>Run</th><th>Total time</th><th>vs. 6.0 baseline</th></tr>
+        <tr><td>TypeScript 6.0</td><td>____</td><td>1.0×</td></tr>
+        <tr><td>7.0 · checkers 1</td><td>____</td><td>____</td></tr>
+        <tr><td>7.0 · checkers 2</td><td>____</td><td>____</td></tr>
+        <tr><td>7.0 · checkers 4</td><td>____</td><td>____</td></tr>
+        <tr><td>7.0 · checkers 8</td><td>____</td><td>____</td></tr>
+      </table>
+      <div class="note"><strong>What you'll likely see.</strong> Time drops sharply from 6.0 to 7.0 even at <code>--checkers 1</code> (that's the native-code half of the win). Adding checkers helps up to a point, then flattens — and on a smaller project or a low-core machine it may not improve much beyond the default, or may even tick upward. That plateau is the lesson: parallelism has diminishing returns, and the right number is the one your own numbers show.</div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">Step 5 (monorepo, optional) — try <code>--builders</code></h3>
+      <p>If your project uses project references, build it with parallel builders and watch the multiplication effect:</p>
+      <pre><code>npx tsc --build --builders 2
+npx tsc --build --builders 4</code></pre>
+      <p>Remember builders compound with checkers — keep an eye on memory, and don't push both high on a laptop.</p>
+    </div>
+
+    <details class="primer">
+      <summary>Refresh your knowledge?</summary>
+      <div class="primer-body">
+        <p><strong>How to benchmark fairly.</strong> A "speed test" is only meaningful if the comparison is clean. A few rules that keep your numbers honest:</p>
+
+        <p><strong>Warm vs. cold cache.</strong> The first time you run a compile, the operating system reads your files from disk for the first time; the second time, those files are cached in memory and reads are far faster. This is "cold" vs. "warm" cache. Always discard the first run and compare warm-cache runs against each other, or you'll be measuring disk speed, not compiler speed.</p>
+
+        <p><strong>Wall-clock vs. CPU time.</strong> <em>Wall-clock</em> time is how long you waited (a stopwatch). <em>CPU</em> time is the total processor work, summed across all cores — so a parallel run can use more CPU time while finishing in less wall-clock time. For "how much faster does it feel," wall-clock is what matters; the compiler's <code>Total time</code> reports the wall-clock duration.</p>
+
+        <p><strong>Hold everything else still.</strong> Close other heavy apps, stay on power (laptops throttle on battery), don't change the source between runs, and run several times to average out noise. Change one variable at a time — that's why the sweep above varies only <code>--checkers</code>.</p>
+
+        <p><strong>Why your number won't match the headline.</strong> Microsoft's "~10×" came from a specific, very large codebase on specific hardware. Smaller projects have less work to parallelise and proportionally more fixed overhead, so they show smaller multiples. A 3–5× result on a mid-size project is a perfectly normal, honest outcome — it doesn't mean you did anything wrong.</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- TAB: CHECK YOUR KNOWLEDGE ============================================= -->
+  <div class="tabpanel" id="tab-check">
+    <div id="questionsWrap" class="card">
+      <div class="eyebrow">Check your knowledge</div>
+
+      <div class="q">
+        <div class="stem">Q1. Roughly how is TypeScript 7's ~10× speed-up split?</div>
+        <label class="opt"><input type="radio" name="q1" value="A">Entirely from parallelism; native code makes no difference.</label>
+        <label class="opt"><input type="radio" name="q1" value="B">About half from native code execution (no JS-runtime/JIT overhead) and about half from parallelism.</label>
+        <label class="opt"><input type="radio" name="q1" value="C">Entirely from caching results between runs.</label>
+      </div>
+
+      <div class="q">
+        <div class="stem">Q2. What does the <code>--checkers</code> flag control, and what is its default?</div>
+        <label class="opt"><input type="radio" name="q2" value="A">The number of parallel type-checking workers; default 4.</label>
+        <label class="opt"><input type="radio" name="q2" value="B">The number of files checked per second; default 1000.</label>
+        <label class="opt"><input type="radio" name="q2" value="C">Whether to emit declaration files; default off.</label>
+      </div>
+
+      <div class="q">
+        <div class="stem">Q3. Why can raising <code>--checkers</code> stop helping — or even slow things down — on some machines?</div>
+        <label class="opt"><input type="radio" name="q3" value="A">The compiler caps useful workers at 2 regardless of hardware.</label>
+        <label class="opt"><input type="radio" name="q3" value="B">More workers add coordination cost and memory use; beyond your core count or memory budget the overhead outweighs the gain.</label>
+        <label class="opt"><input type="radio" name="q3" value="C">Extra workers disable native-code execution.</label>
+      </div>
+
+      <div class="q">
+        <div class="stem">Q4. How do <code>--builders</code> and <code>--checkers</code> interact?</div>
+        <label class="opt"><input type="radio" name="q4" value="A">They are mutually exclusive — setting one disables the other.</label>
+        <label class="opt"><input type="radio" name="q4" value="B">They multiply: each builder spins up its own checkers, so <code>--checkers 4 --builders 4</code> can run up to 16 type-checkers at once.</label>
+        <label class="opt"><input type="radio" name="q4" value="C">They add: <code>--checkers 4 --builders 4</code> gives exactly 8 type-checkers.</label>
+      </div>
+
+      <div class="q">
+        <div class="stem">Q5. When is <code>--singleThreaded</code> the right tool?</div>
+        <label class="opt"><input type="radio" name="q5" value="A">For everyday builds, because it is always the fastest mode.</label>
+        <label class="opt"><input type="radio" name="q5" value="B">For debugging, comparing 6.0 vs 7.0 fairly, orchestrating parallelism externally, or running where memory is very limited.</label>
+        <label class="opt"><input type="radio" name="q5" value="C">Only when emitting declaration files.</label>
+      </div>
+
+      <div class="q">
+        <div class="stem">Q6. When benchmarking the two compilers, why discard the first run and compare later runs?</div>
+        <label class="opt"><input type="radio" name="q6" value="A">The first run is always wrong and must be deleted.</label>
+        <label class="opt"><input type="radio" name="q6" value="B">The first run reads files from disk (cold cache); later runs hit the warm in-memory cache, so warm-vs-warm is the fair comparison.</label>
+        <label class="opt"><input type="radio" name="q6" value="C">The compiler refuses to parallelise on the first run.</label>
+      </div>
+
+      <button class="submit-btn" id="submitAnswersBtn" disabled>Submit answers</button>
+      <div class="submit-note" id="submitNote">Select an answer for each question to submit.</div>
+    </div>
+
+    <div id="submittedWrap" class="card hidden">
+      <p>Answers submitted. Review complete — mark this module as complete below.</p>
+    </div>
+
+    <div class="complete-bar disabled" id="completeBar">
+      <input type="checkbox" id="completeCb" disabled>
+      <label for="completeCb" id="completeLabel">Answer all questions to unlock</label>
+      <button class="redo-btn" id="redoBtn">&#x21BA; Redo module</button>
+    </div>
+  </div>
+
+  <div class="nav-row">
+    <a class="nav-btn secondary" href="ts7-module-1-why-native-compiler.html">← Module 1</a>
+    <a class="nav-btn" href="ts7-module-3-breaking-changes-defaults.html">Module 3: Breaking Changes &amp; Defaults →</a>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script>
+const EXAMPLE_ID = 'ts7-module-2-performance-parallelism';
+const QIDS = ['q1','q2','q3','q4','q5','q6'];
+const CORRECT = { q1:'B', q2:'A', q3:'B', q4:'B', q5:'B', q6:'B' };
+
+document.getElementById('tabbar').addEventListener('click', function(e){
+  const btn = e.target.closest('.tabbtn'); if(!btn) return;
+  const tab = btn.getAttribute('data-tab');
+  document.querySelectorAll('.tabbtn').forEach(function(b){ b.classList.toggle('active', b===btn); });
+  document.querySelectorAll('.tabpanel').forEach(function(p){ p.classList.toggle('active', p.id==='tab-'+tab); });
+  window.scrollTo({top:0,behavior:'smooth'});
+});
+
+const _FB_CONFIG = {
+  apiKey: "AIzaSyC-I-IOCq2fCwa471fsD5xOn6SYQSBDp7Q",
+  authDomain: "sfcertification-grafana.firebaseapp.com",
+  projectId: "sfcertification-grafana",
+  storageBucket: "sfcertification-grafana.firebasestorage.app",
+  messagingSenderId: "227322696511",
+  appId: "1:227322696511:web:12e7ced7dd3d45fa06798a"
+};
+if (!window._fbApp) window._fbApp = firebase.initializeApp(_FB_CONFIG);
+const _auth = firebase.auth(window._fbApp);
+window._learnerUid = 'anon'; window._learnerEmail = null;
+
+window.pmLearnerKey = function(exampleId){ return 'pm_learner_' + window._learnerUid + '_' + exampleId; };
+function loadState(){ try { return JSON.parse(localStorage.getItem(window.pmLearnerKey(EXAMPLE_ID))) || {}; } catch(e){ return {}; } }
+function saveState(s){ localStorage.setItem(window.pmLearnerKey(EXAMPLE_ID), JSON.stringify(s)); }
+
+window.pmSignOut = function(){ _auth.signOut(); };
+
+_auth.onAuthStateChanged(function(user){
+  if (user && user.email && user.email.endsWith('@sourcefuse.com')) {
+    window._learnerUid = user.uid; window._learnerEmail = user.email;
+    document.getElementById('userEmail').textContent = user.email;
+    document.dispatchEvent(new Event('learnerReady'));
+  } else if (user && user.email && !user.email.endsWith('@sourcefuse.com')) {
+    _auth.signOut();
+  } else {
+    window.location.href = 'course-map.html';
+  }
+});
+
+document.addEventListener('learnerReady', function() {
+  const state = loadState();
+  cpEnsureModuleStarted();
+
+  const completeCb = document.getElementById('completeCb');
+  if (completeCb) {
+    completeCb.addEventListener('change', function() {
+      if (!completeCb.checked) return;
+      const s = loadState(); s.complete = true; saveState(s);
+      activateCompleteBar(true);
+    });
+  }
+  const redoBtn = document.getElementById('redoBtn');
+  if (redoBtn) redoBtn.addEventListener('click', function() {
+    localStorage.removeItem(window.pmLearnerKey(EXAMPLE_ID));
+    document.getElementById('questionsWrap').classList.remove('hidden');
+    document.getElementById('submittedWrap').classList.add('hidden');
+    document.querySelectorAll('.opt input[type="radio"]').forEach(function(r){ r.checked = false; });
+    document.getElementById('submitAnswersBtn').disabled = true;
+    document.getElementById('submitNote').textContent = 'Select an answer for each question to submit.';
+    activateCompleteBar(false);
+  });
+
+  if (state.complete) { showSubmittedState(); activateCompleteBar(true); return; }
+  if (state.submittedAt) { showSubmittedState(); activateCompleteBar(false); return; }
+
+  document.querySelectorAll('.opt input[type="radio"]').forEach(function(radio){
+    radio.addEventListener('change', checkAllAnswered);
+  });
+  document.getElementById('submitAnswersBtn').addEventListener('click', submitAnswers);
+});
+
+function checkAllAnswered() {
+  const all = QIDS.every(n => document.querySelector('input[name="'+n+'"]:checked'));
+  document.getElementById('submitAnswersBtn').disabled = !all;
+  document.getElementById('submitNote').textContent = all ? 'Ready to submit.' : 'Select an answer for each question to submit.';
+}
+
+function submitAnswers() {
+  const answers = {};
+  QIDS.forEach(function(n){
+    const v = document.querySelector('input[name="'+n+'"]:checked'); if (v) answers[n] = v.value;
+  });
+  let correct = 0;
+  Object.keys(CORRECT).forEach(function(n){ if (answers[n] === CORRECT[n]) correct++; });
+  const s = loadState();
+  s.exampleId = EXAMPLE_ID; s.answers = answers; s.correct = correct;
+  s.submittedAt = new Date().toISOString();
+  saveState(s);
+  showSubmittedState();
+  activateCompleteBar(false);
+}
+
+function showSubmittedState() {
+  document.getElementById('questionsWrap').classList.add('hidden');
+  document.getElementById('submittedWrap').classList.remove('hidden');
+}
+
+function activateCompleteBar(isDone) {
+  const bar = document.getElementById('completeBar');
+  const cb = document.getElementById('completeCb');
+  const label = document.getElementById('completeLabel');
+  const redo = document.getElementById('redoBtn');
+  if (!bar) return;
+  if (isDone) {
+    bar.className = 'complete-bar done';
+    cb.disabled = true; cb.checked = true;
+    label.textContent = '✓ Module complete';
+    if (redo) redo.classList.add('visible');
+    cpWriteModuleComplete();
+  } else {
+    bar.className = 'complete-bar';
+    cb.disabled = false; cb.checked = false;
+    label.textContent = 'Mark module as complete';
+    if (redo) redo.classList.remove('visible');
+  }
+}
+</script>
+
+<!-- ===== SHARED courseProgress v2 wiring (inlined) ========================= -->
+<script>
+var CP_COURSE_ID = 'Nr2nA1nxBRaFA4fwzA36';
+var THIS_MODULE_KEY = EXAMPLE_ID;
+var CP_MODULE_IDS = [
+  'ts7-module-1-why-native-compiler',
+  'ts7-module-2-performance-parallelism',
+  'ts7-module-3-breaking-changes-defaults',
+  'ts7-module-4-packaging-tooling',
+  'ts7-module-5-editor-rollout'
+];
+
+function cpNow() {
+  var d = new Date();
+  var pad = function(n){ return String(n).padStart(2,'0'); };
+  return {
+    date: d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()),
+    time: pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds()),
+    ms:   d.getTime()
+  };
+}
+function cpFmtDuration(ms) {
+  if (ms == null || ms < 0) return null;
+  var s = Math.floor(ms/1000), h = Math.floor(s/3600), m = Math.floor((s%3600)/60), sec = s%60;
+  if (h > 0) return h+'h '+m+'m '+sec+'s';
+  if (m > 0) return m+'m '+sec+'s';
+  return sec+'s';
+}
+function cpDb() { return firebase.firestore(window._fbApp); }
+function cpDocRef() { return cpDb().collection('courseProgress').doc(window._learnerUid); }
+function cpReady() { return window._fbApp && window._learnerUid && window._learnerUid !== 'anon'; }
+
+/* Set module start once (call on page load / learnerReady). Never overwrites
+   an existing start. Also stamps courseStartedOn/At once for the whole course. */
+function cpEnsureModuleStarted() {
+  if (!cpReady()) return;
+  var ref = cpDocRef();
+  ref.get().then(function(snap){
+    var data = snap.exists ? (snap.data() || {}) : {};
+    var course = (data.courses && data.courses[CP_COURSE_ID]) || {};
+    var mods = course.modules || {};
+    var t = cpNow();
+    var update = { email: window._learnerEmail || null, name: window._learnerEmail || null, courses: {} };
+    update.courses[CP_COURSE_ID] = { moduleInProgress: THIS_MODULE_KEY, modules: {} };
+    if (!mods[THIS_MODULE_KEY] || !mods[THIS_MODULE_KEY].startedOn) {
+      update.courses[CP_COURSE_ID].modules[THIS_MODULE_KEY] = { startedOn: t.date, startedAt: t.time };
+    }
+    // Stamp course start once.
+    if (!course.courseStartedOn) { update.courses[CP_COURSE_ID].courseStartedOn = t.date; update.courses[CP_COURSE_ID].courseStartedAt = t.time; }
+    ref.set(update, { merge: true })
+       .catch(function(e){ console.warn('[courseProgress] start write failed:', e.message); });
+  }).catch(function(e){ console.warn('[courseProgress] start read failed:', e.message); });
+}
+
+/* On completion: write module completion + timeTaken; if all modules done,
+   close the course. Call from the "mark complete" handler. */
+function cpWriteModuleComplete() {
+  if (!cpReady()) return;
+  var ref = cpDocRef();
+  ref.get().then(function(snap){
+    var data = snap.exists ? (snap.data() || {}) : {};
+    var course = (data.courses && data.courses[CP_COURSE_ID]) || {};
+    var mods = course.modules || {};
+    var t = cpNow();
+    var startMs = null;
+    var mEntry = mods[THIS_MODULE_KEY];
+    if (mEntry && mEntry.startedOn && mEntry.startedAt) {
+      startMs = new Date(mEntry.startedOn + 'T' + mEntry.startedAt).getTime();
+    }
+    var moduleTimeTaken = startMs != null ? cpFmtDuration(t.ms - startMs) : null;
+
+    var courseUpdate = { modules: {} };
+    // Preserve an existing real completion; otherwise stamp now.
+    var existing = mods[THIS_MODULE_KEY] || {};
+    courseUpdate.modules[THIS_MODULE_KEY] = {
+      completedOn: existing.completedOn || t.date,
+      completedAt: existing.completedAt || t.time,
+      timeTaken:   existing.timeTaken   || moduleTimeTaken
+    };
+    if (course.moduleInProgress === THIS_MODULE_KEY) courseUpdate.moduleInProgress = null;
+
+    var completedCount = 0;
+    CP_MODULE_IDS.forEach(function(id){
+      if (id === THIS_MODULE_KEY) { completedCount++; return; }
+      if (mods[id] && mods[id].completedOn) completedCount++;
+    });
+    if (completedCount >= CP_MODULE_IDS.length && !course.courseCompletedOn) {
+      courseUpdate.courseCompletedOn = t.date;
+      courseUpdate.courseCompletedAt = t.time;
+      if (course.courseStartedOn && course.courseStartedAt) {
+        var cStart = new Date(course.courseStartedOn + 'T' + course.courseStartedAt).getTime();
+        courseUpdate.timeTaken = cpFmtDuration(t.ms - cStart);
+      }
+    }
+    var update = { email: window._learnerEmail || null, name: window._learnerEmail || null, courses: {} };
+    update.courses[CP_COURSE_ID] = courseUpdate;
+    ref.set(update, { merge: true })
+       .catch(function(e){ console.warn('[courseProgress] complete write failed:', e.message); });
+  }).catch(function(e){ console.warn('[courseProgress] complete read failed:', e.message); });
+}
+</script>
+</body>
+</html>
