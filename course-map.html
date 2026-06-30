@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<!-- ============================================================================
+     SF KNOWLEDGE HUB — TypeScript 7 — DASHBOARD / COURSE MAP
+     Type 1 (practice) template, adapted for a 5-module conceptual course.
+     Gates the certification exam until all 5 modules are complete
+     (complete === true in localStorage per module).
+     courseId (CP_COURSE_ID): Nr2nA1nxBRaFA4fwzA36
+     ============================================================================ -->
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TypeScript 7 — SF Knowledge Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Source+Code+Pro:wght@400;600&family=Source+Serif+4:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--blue:#1a6eb5;--blue-dark:#0f4c81;--ink:#1f2933;--muted:#647687;--bg:#eef2f8;--card:#fff;--border:#d6e0ee;--green:#16a34a}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'Source Sans 3',system-ui,sans-serif;color:var(--ink);background:var(--bg);line-height:1.6}
+  .userbar{display:flex;justify-content:space-between;align-items:center;padding:12px 24px;background:var(--card);border-bottom:1px solid var(--border);font-size:14px}
+  .signout{padding:8px 16px;border:none;border-radius:6px;background:var(--blue);color:#fff;cursor:pointer;font-family:inherit}
+  .wrap{max-width:900px;margin:0 auto;padding:24px}
+  h1{font-family:'Source Serif 4',Georgia,serif;font-size:34px;margin:6px 0}
+  .eyebrow{font-family:'Source Code Pro',monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--blue)}
+  .lede{color:var(--muted);max-width:62ch}
+  .progress{margin:14px 0;font-family:'Source Code Pro',monospace;color:var(--muted)}
+  .tier{margin-top:28px}
+  .tier h2{font-size:18px}
+  .ex{display:flex;justify-content:space-between;align-items:center;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin:10px 0}
+  .ex .label{display:flex;flex-direction:column}
+  .ex a{color:var(--blue);text-decoration:none;font-weight:600}
+  .ex .sub{font-size:13px;color:var(--muted)}
+  .ex .status{font-family:'Source Code Pro',monospace;font-size:13px;color:var(--muted);white-space:nowrap;margin-left:14px}
+  .ex .status.done{color:var(--green)}
+  .cert-card{background:var(--card);border-left:4px solid var(--blue);border:1px solid var(--border);border-radius:12px;padding:22px;margin-top:30px;opacity:.55}
+  .cert-card.unlocked{opacity:1}
+  .cert-card a{color:var(--blue);font-weight:700;text-decoration:none}
+  #authPanel{max-width:360px;margin:60px auto;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px}
+  #authPanel input{width:100%;padding:10px;margin:6px 0;border:1px solid var(--border);border-radius:8px;font-family:inherit}
+  #authPanel button{width:100%;padding:11px;border:none;border-radius:8px;background:var(--blue);color:#fff;font-family:inherit;cursor:pointer;margin-top:8px}
+  #authPanel hr{border:none;border-top:1px solid var(--border);margin:16px 0}
+  .hidden{display:none}
+  .err{color:#c0392b;font-size:13px;margin-top:8px}
+</style>
+</head>
+<body>
+
+<div class="userbar">
+  <span>Welcome, <span id="userEmail">…</span></span>
+  <button class="signout" onclick="pmSignOut()">Sign out</button>
+</div>
+
+<!-- AUTH PANEL (shown when signed out) -->
+<div id="authPanel">
+  <div class="eyebrow">Sign in</div>
+  <h1 style="font-size:22px">TypeScript 7</h1>
+  <button onclick="pmGoogleSignIn()">Sign in with Google</button>
+  <hr>
+  <input id="pm-ep-email" type="email" placeholder="you@sourcefuse.com">
+  <input id="pm-ep-password" type="password" placeholder="Password">
+  <button onclick="pmEmailSignIn()">Sign in with email</button>
+  <div class="err hidden" id="authError"></div>
+</div>
+
+<!-- COURSE CONTENT (shown when signed in) -->
+<div class="wrap hidden" id="courseWrap">
+  <div class="eyebrow">Course map · Languages &amp; Tooling</div>
+  <h1>TypeScript 7</h1>
+  <p class="lede">TypeScript 7 is not a new-syntax release — it is the compiler, rebuilt. The whole toolchain was ported to Go (the effort known as Project Corsa), running roughly 10× faster while preserving TypeScript 6.0's exact type-checking behaviour. This course is built for developers already writing TypeScript who are moving to the native compiler: what actually changes, what breaks, and how to roll it out. Each module opens a "Refresh your knowledge?" panel for anyone who wants the underlying essentials first.</p>
+  <p class="lede" style="margin-top:6px">Leads to the <strong>SF Certified TypeScript 7 Practitioner</strong> certification.</p>
+  <div class="progress" id="progressLine">0 of 5 complete</div>
+
+  <div class="tier">
+    <h2>The five modules</h2>
+
+    <div class="ex" data-example="ts7-module-1-why-native-compiler">
+      <div class="label">
+        <a href="ts7-module-1-why-native-compiler.html">Module 1 — Why TypeScript 7 Exists</a>
+        <span class="sub">The native compiler: the Go port, why it's a port and not a rewrite, and why type-checking behaviour is unchanged.</span>
+      </div>
+      <span class="status">Not started</span>
+    </div>
+
+    <div class="ex" data-example="ts7-module-2-performance-parallelism">
+      <div class="label">
+        <a href="ts7-module-2-performance-parallelism.html">Module 2 — Performance &amp; Parallelism</a>
+        <span class="sub">The ~10× story, and the new controls: --checkers, --builders, --singleThreaded, and the rebuilt --watch.</span>
+      </div>
+      <span class="status">Not started</span>
+    </div>
+
+    <div class="ex" data-example="ts7-module-3-breaking-changes-defaults">
+      <div class="label">
+        <a href="ts7-module-3-breaking-changes-defaults.html">Module 3 — Breaking Changes &amp; New Defaults</a>
+        <span class="sub">Deprecations promoted to hard errors; strict, module, stableTypeOrdering, rootDir and types defaults.</span>
+      </div>
+      <span class="status">Not started</span>
+    </div>
+
+    <div class="ex" data-example="ts7-module-4-packaging-tooling">
+      <div class="label">
+        <a href="ts7-module-4-packaging-tooling.html">Module 4 — Packaging, Tooling &amp; Coexistence</a>
+        <span class="sub">tsgo → tsc, the @typescript/typescript6 compat package, running 6.0 and 7.0 side by side, the 7.1 API caveat.</span>
+      </div>
+      <span class="status">Not started</span>
+    </div>
+
+    <div class="ex" data-example="ts7-module-5-editor-rollout">
+      <div class="label">
+        <a href="ts7-module-5-editor-rollout.html">Module 5 — Editor / Language Service &amp; Rollout</a>
+        <span class="sub">The LSP-based native preview, what's solid vs catching up, and a staged adoption playbook.</span>
+      </div>
+      <span class="status">Not started</span>
+    </div>
+  </div>
+
+  <div class="cert-card" id="certCard">
+    <div class="eyebrow">Certification</div>
+    <h2>SF Certified TypeScript 7 Practitioner</h2>
+    <p>Complete all five modules, then take the certification exam.</p>
+    <a href="certification-test.html" id="certLink">Start the certification exam →</a>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script>
+const _FB_CONFIG = {
+  apiKey:"AIzaSyC-I-IOCq2fCwa471fsD5xOn6SYQSBDp7Q", authDomain:"sfcertification-grafana.firebaseapp.com",
+  projectId:"sfcertification-grafana", storageBucket:"sfcertification-grafana.firebasestorage.app",
+  messagingSenderId:"227322696511", appId:"1:227322696511:web:12e7ced7dd3d45fa06798a"
+};
+if (!window._fbApp) window._fbApp = firebase.initializeApp(_FB_CONFIG);
+const _auth = firebase.auth(window._fbApp);
+window._learnerUid='anon'; window._learnerEmail=null;
+
+// Ordered list — each = filename minus .html. Mirrors CP_MODULE_IDS in the module pages.
+const EXAMPLE_IDS = [
+  'ts7-module-1-why-native-compiler',
+  'ts7-module-2-performance-parallelism',
+  'ts7-module-3-breaking-changes-defaults',
+  'ts7-module-4-packaging-tooling',
+  'ts7-module-5-editor-rollout'
+];
+
+window.pmSignOut = function(){ _auth.signOut(); };
+window.pmGoogleSignIn = function(){
+  const p = new firebase.auth.GoogleAuthProvider();
+  p.setCustomParameters({ hd:'sourcefuse.com' });
+  _auth.signInWithPopup(p).catch(function(e){ showErr(e.message); });
+};
+window.pmEmailSignIn = function(){
+  const email=(document.getElementById('pm-ep-email').value||'').trim().toLowerCase();
+  const pwd=document.getElementById('pm-ep-password').value||'';
+  if(!email||!pwd){ showErr('Enter email and password.'); return; }
+  if(!email.endsWith('@sourcefuse.com')){ showErr('Only @sourcefuse.com accounts are allowed.'); return; }
+  _auth.signInWithEmailAndPassword(email,pwd).catch(function(e){ showErr(e.message); });
+};
+function showErr(m){ const e=document.getElementById('authError'); e.textContent=m; e.classList.remove('hidden'); }
+
+_auth.onAuthStateChanged(function(user){
+  if (user && user.email && user.email.endsWith('@sourcefuse.com')) {
+    window._learnerUid=user.uid; window._learnerEmail=user.email;
+    document.getElementById('userEmail').textContent=user.email;
+    document.getElementById('authPanel').classList.add('hidden');
+    document.getElementById('courseWrap').classList.remove('hidden');
+    renderProgress();
+  } else if (user && user.email) { _auth.signOut(); }
+  else { document.getElementById('authPanel').classList.remove('hidden'); document.getElementById('courseWrap').classList.add('hidden'); }
+});
+
+function exComplete(id){
+  try { const s=JSON.parse(localStorage.getItem('pm_learner_'+window._learnerUid+'_'+id)); return !!(s && s.complete===true); }
+  catch(e){ return false; }
+}
+function renderProgress(){
+  let done=0;
+  document.querySelectorAll('.ex').forEach(function(row){
+    const id=row.getAttribute('data-example');
+    const st=row.querySelector('.status');
+    if (exComplete(id)) { st.textContent='✓ Complete'; st.classList.add('done'); done++; }
+    else { st.textContent='Not started'; st.classList.remove('done'); }
+  });
+  document.getElementById('progressLine').textContent = done+' of '+EXAMPLE_IDS.length+' complete';
+  const allDone = done>=EXAMPLE_IDS.length && EXAMPLE_IDS.length>0;
+  const card=document.getElementById('certCard'), link=document.getElementById('certLink');
+  if (allDone){ card.classList.add('unlocked'); link.style.pointerEvents='auto'; }
+  else { card.classList.remove('unlocked'); link.style.pointerEvents='none'; }
+}
+</script>
+</body>
+</html>
