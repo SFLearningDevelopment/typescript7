@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<!-- ============================================================================
+     SF KNOWLEDGE HUB — TypeScript 7 — MODULE 5
+     Editor / Language Service & Rollout
+     moduleKey (EXAMPLE_ID): ts7-module-5-editor-rollout
+     courseId  (CP_COURSE_ID): Nr2nA1nxBRaFA4fwzA36
+     Tabs: Overview / Adoption playbook / Capstone lab / Check your knowledge.
+     ============================================================================ -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 5 — Editor / Language Service & Rollout — TypeScript 7</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Source+Code+Pro:wght@400;600&family=Source+Serif+4:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue:#1a6eb5; --blue-dark:#0f4c81; --ink:#1f2933; --muted:#647687;
+    --bg:#eef2f8; --card:#ffffff; --border:#d6e0ee; --green:#16a34a; --coral:#c0392b;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'Source Sans 3',system-ui,sans-serif;color:var(--ink);background:var(--bg);line-height:1.65;font-size:17px}
+  .userbar{display:flex;justify-content:space-between;align-items:center;padding:12px 24px;background:var(--card);border-bottom:1px solid var(--border);font-size:14px}
+  .signout{padding:8px 16px;border:none;border-radius:6px;background:var(--blue);color:#fff;cursor:pointer;font-family:inherit}
+  .crumbs{padding:14px 24px;color:var(--muted);font-size:13px}
+  .crumbs a{color:var(--blue);text-decoration:none}
+  .wrap{max-width:860px;margin:0 auto;padding:8px 24px 80px}
+  h1{font-family:'Source Serif 4',Georgia,serif;font-size:30px;margin:8px 0 4px}
+  h3{font-family:'Source Serif 4',Georgia,serif;font-size:19px;margin:22px 0 6px}
+  .eyebrow{font-family:'Source Code Pro',monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--blue)}
+  .tags{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+  .tag{font-family:'Source Code Pro',monospace;font-size:12px;background:#e3edf9;color:var(--blue-dark);padding:5px 10px;border-radius:14px}
+  .tabbar{display:flex;flex-wrap:wrap;gap:4px;border-bottom:2px solid var(--border);margin:22px 0 0}
+  .tabbtn{appearance:none;border:none;background:none;font-family:inherit;font-size:15px;font-weight:600;color:var(--muted);padding:11px 16px;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px}
+  .tabbtn:hover{color:var(--blue)}
+  .tabbtn.active{color:var(--blue-dark);border-bottom-color:var(--blue)}
+  .tabpanel{display:none}
+  .tabpanel.active{display:block;animation:fade .18s ease}
+  @keyframes fade{from{opacity:.4}to{opacity:1}}
+  .concepts{margin:18px 0}
+  .concept{border:1px solid var(--border);border-radius:12px;margin:10px 0;overflow:hidden;background:var(--card)}
+  .concept summary{cursor:pointer;padding:16px 18px;list-style:none;display:flex;align-items:center;gap:12px}
+  .concept summary::-webkit-details-marker{display:none}
+  .concept .chip{font-family:'Source Code Pro',monospace;font-size:12px;background:#e3edf9;color:var(--blue-dark);padding:5px 10px;border-radius:14px;white-space:nowrap}
+  .concept .headline{font-weight:600;color:var(--ink)}
+  .concept .toggle{margin-left:auto;font-family:'Source Code Pro',monospace;color:var(--blue);font-size:18px;line-height:1}
+  .concept[open] .toggle{transform:rotate(45deg)}
+  .concept .concept-body{padding:0 18px 18px}
+  .concept .concept-body p{margin:12px 0}
+  .concept .concept-body p:first-child{margin-top:4px}
+  .concept .concept-body p:last-child{margin-bottom:0}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px;margin:18px 0}
+  .card p{margin:0 0 12px}
+  .card p:last-child{margin-bottom:0}
+  ul.clean{margin:10px 0;padding-left:22px}
+  ul.clean li{margin:7px 0}
+  code{font-family:'Source Code Pro',monospace;font-size:.92em;background:#eef3f9;padding:2px 6px;border-radius:5px}
+  pre{background:#0f2233;color:#e6edf3;border-radius:10px;padding:16px 18px;overflow-x:auto;font-family:'Source Code Pro',monospace;font-size:14.5px;line-height:1.6;margin:14px 0}
+  pre code{background:none;color:inherit;padding:0;font-size:inherit}
+  .cmt{color:#7d97ad}
+  .add{color:#7ee787}
+  .del{color:#ffa198}
+  .note{border-left:4px solid var(--blue);background:#f4f8fd;border-radius:0 8px 8px 0;padding:12px 16px;margin:14px 0;font-size:15.5px}
+  .note.warn{border-left-color:#d08a1e;background:#fdf7ec}
+  .note strong{color:var(--blue-dark)}
+  table.tbl{width:100%;border-collapse:collapse;margin:14px 0;font-size:15px}
+  table.tbl th,table.tbl td{border:1px solid var(--border);padding:9px 12px;text-align:left;vertical-align:top}
+  table.tbl th{background:#f4f8fd;font-family:'Source Code Pro',monospace;font-size:12.5px;color:var(--blue-dark)}
+  table.tbl td code{background:#eef3f9}
+  .primer{border:1px solid var(--border);border-radius:12px;margin:18px 0;overflow:hidden}
+  .primer summary{cursor:pointer;padding:14px 18px;background:#f4f8fd;font-weight:600;color:var(--blue-dark);list-style:none}
+  .primer summary::-webkit-details-marker{display:none}
+  .primer summary::before{content:'+ ';font-family:'Source Code Pro',monospace}
+  .primer[open] summary::before{content:'– '}
+  .primer .primer-body{padding:0 18px 16px}
+  .primer .primer-body p{margin:12px 0}
+  .q{margin:16px 0}
+  .q .stem{font-weight:600;margin-bottom:8px}
+  .opt{display:block;border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin:8px 0;cursor:pointer}
+  .opt input{margin-right:10px}
+  .submit-btn{padding:11px 20px;border:none;border-radius:8px;background:var(--blue);color:#fff;font-family:inherit;font-size:15px;cursor:pointer}
+  .submit-btn:disabled{background:#c3d3e6;cursor:not-allowed}
+  .submit-note{font-family:'Source Code Pro',monospace;font-size:13px;color:var(--muted);margin-top:8px}
+  .hidden{display:none}
+  .complete-bar{display:flex;align-items:center;gap:12px;border-top:1px solid var(--border);margin-top:22px;padding-top:18px}
+  .complete-bar.disabled{opacity:.5}
+  .complete-bar .redo-btn{margin-left:auto;display:none;border:1px solid var(--border);background:#fff;border-radius:8px;padding:8px 14px;cursor:pointer;font-family:inherit}
+  .complete-bar .redo-btn.visible{display:inline-block}
+  .complete-bar.done{color:var(--green)}
+  .nav-row{display:flex;justify-content:space-between;margin-top:30px}
+  .nav-btn{padding:12px 18px;border-radius:8px;background:var(--blue);color:#fff;text-decoration:none;font-weight:600}
+  .nav-btn.secondary{background:#fff;color:var(--blue);border:1px solid var(--border)}
+  .advisory{border-left:4px solid #d08a1e;background:#fdf7ec;border-radius:0 8px 8px 0;padding:12px 16px;margin:16px 0;font-size:14.5px;color:var(--ink)}
+  .advisory .when{font-family:'Source Code Pro',monospace;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:#a96c12;display:block;margin-bottom:3px}
+  .advisory code{font-family:'Source Code Pro',monospace;font-size:.92em;background:#f5ead2;padding:2px 6px;border-radius:5px}
+  .cert-band{background:linear-gradient(180deg,#f4f8fd,#fff);border:1px solid var(--border);border-left:4px solid var(--green);border-radius:12px;padding:20px 22px;margin:24px 0 6px}
+  .cert-band h3{margin-top:0;color:var(--blue-dark)}
+</style>
+</head>
+<body>
+
+<div class="userbar">
+  <span>Welcome, <span id="userEmail">…</span></span>
+  <button class="signout" onclick="pmSignOut()">Sign out</button>
+</div>
+<div class="crumbs">
+  <a href="course-map.html">Back to course dashboard</a> / Module 5 / Editor &amp; Rollout
+</div>
+
+<div class="wrap">
+  <div class="eyebrow">Module 5</div>
+  <h1>Editor / Language Service &amp; Rollout</h1>
+  <div class="tags">
+    <span class="tag">language service</span>
+    <span class="tag">LSP</span>
+    <span class="tag">adoption</span>
+  </div>
+
+  <div class="tabbar" id="tabbar">
+    <button class="tabbtn active" data-tab="overview">Overview</button>
+    <button class="tabbtn" data-tab="playbook">Adoption playbook</button>
+    <button class="tabbtn" data-tab="lab">Capstone lab</button>
+    <button class="tabbtn" data-tab="check">Check your knowledge</button>
+  </div>
+
+  <!-- TAB: OVERVIEW ========================================================= -->
+  <div class="tabpanel active" id="tab-overview">
+    <p style="color:var(--muted);margin:18px 0 4px">The fast compiler powers more than your builds — it powers your editor. This final module covers the editor side of the native port and how to actually roll TypeScript 7 out to a team without drama. Open each idea.</p>
+
+    <div class="concepts">
+      <details class="concept" open>
+        <summary>
+          <span class="chip">language service</span>
+          <span class="headline">The same engine drives your editor</span>
+          <span class="toggle">+</span>
+        </summary>
+        <div class="concept-body">
+          <p>The "language service" is the part of TypeScript that powers editor features: completions, hover tooltips, go-to-definition, error squiggles, refactorings. It runs on the same foundation as the command-line compiler, so the native port's speed shows up in the editor too — teams report roughly 8–10× faster project-load and type-check times in the editor on large repositories.</p>
+          <p>You try it through the <strong>TypeScript Native Preview</strong> extension for VS Code, updated frequently and already in widespread use. It respects most of the same settings and features as the built-in TypeScript extension, so for most people it feels like their familiar editor — only faster to wake up and respond on a big codebase.</p>
+        </div>
+      </details>
+
+      <details class="concept">
+        <summary>
+          <span class="chip">LSP</span>
+          <span class="headline">Built on the Language Server Protocol</span>
+          <span class="toggle">+</span>
+        </summary>
+        <div class="concept-body">
+          <p>The older editor integration spoke a TypeScript-specific protocol ("TSServer") that predates today's standards. The native port instead speaks the <strong>Language Server Protocol (LSP)</strong> — the editor-agnostic standard most modern languages use. The practical pay-off: the same language service can drive not just VS Code but most modern editors, and even tools like Copilot CLI, rather than being locked to one editor.</p>
+          <p>Because the protocol changed, some behaviour specific to the old VS Code extension may differ, and TypeScript <em>server plugins</em> that hooked into the old protocol don't work under the native preview (this is expected). The upside is bigger than the cost: LSP is why "TypeScript 7 in your editor" isn't a VS-Code-only story.</p>
+        </div>
+      </details>
+
+      <details class="concept">
+        <summary>
+          <span class="chip">parity</span>
+          <span class="headline">What's solid vs. still catching up</span>
+          <span class="toggle">+</span>
+        </summary>
+        <div class="concept-body">
+          <p>The language service was more heavily rewritten than the type-checker, so it's worth knowing where it stands. <strong>Working and ready for daily use:</strong> completions, hovers (including expandable hovers), go-to-definition and go-to-source-definition, diagnostics, inlay hints, code lenses, signature help, and — after earlier gaps — auto-imports, find-all-references, and rename, including in projects with project references.</p>
+          <p><strong>Still catching up:</strong> a few niceties like semantics-enhanced highlighting and some specialised import-management commands, plus the server-plugin story noted above. The headline: the editor experience is described by the team as powerful, stable, and fast today — the remaining gaps are refinements, not fundamentals. The next tab turns this into a concrete rollout plan.</p>
+        </div>
+      </details>
+    </div>
+
+    <details class="primer">
+      <summary>Refresh your knowledge?</summary>
+      <div class="primer-body">
+        <p><strong>What a language server is.</strong> When you hover a variable and see its type, or press "go to definition" and jump across files, an editor isn't doing that analysis itself — it's asking a <strong>language server</strong>: a background program that understands your code and answers questions about it. The editor sends requests ("what's at line 12, column 7?") and the server replies ("a <code>string</code> named <code>title</code>, defined in <code>util.ts</code>"). Separating the two means the heavy language smarts live in one place and any editor can tap them.</p>
+
+        <p><strong>What LSP is, and why it matters.</strong> The <strong>Language Server Protocol</strong> is a shared standard for how editors and language servers talk to each other. Before it, every language needed custom integration code for every editor — an N×M problem. With LSP, a language server speaks one protocol and works in every LSP-capable editor; an editor speaks one protocol and supports every LSP language. TypeScript 7 adopting LSP is what lets its fast language service reach beyond VS Code to other editors with little extra work.</p>
+
+        <p><strong>Editor features as "questions to the server."</strong> It helps to see the familiar features as request types: <em>completion</em> (what can I type here?), <em>hover</em> (what is this?), <em>definition</em> (where is this declared?), <em>references</em> (where is this used?), <em>rename</em> (change this name everywhere safely), <em>diagnostics</em> (what's wrong?). Each is a standard LSP message. When the docs say a feature is "ported," they mean the native server now answers that request correctly.</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- TAB: ADOPTION PLAYBOOK ================================================ -->
+  <div class="tabpanel" id="tab-playbook">
+    <div class="advisory">
+      <span class="when">Accurate as of June 2026</span>
+      Rollout advice here reflects the TypeScript 7.0 RC, where production emit and a stable API are still settling. As 7.0 reaches stable GA, some "wait for stable" cautions below will relax — re-read the official release notes when you plan a real cutover.
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">The guiding principle: separate "check" from "ship"</h3>
+      <p>The safest adoptions exploit one fact established across this course: TypeScript 7's <em>type-checking</em> is essentially complete and matches 6.0, while a few <em>emit</em>-side features may still be settling during the preview. So you can adopt 7.0 for the fast feedback (type-checking, editor) well before you depend on it for production JavaScript emit. Most of the playbook follows from that split.</p>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">Step 1 — Pilot in CI first (lowest risk)</h3>
+      <p>Add a 7.0 type-check job to CI <em>alongside</em> your existing 6.0 build — not replacing it. It runs <code>tsc --noEmit</code> on every push and surfaces any divergence without affecting what you ship. This is the cheapest way to gain confidence on real code.</p>
+      <pre><code><span class="cmt"># CI: run both, compare. 7.0 job is informational at first.</span>
+<span class="cmt"># 6.0 (authoritative for now)</span>
+node ./node_modules/typescript/bin/tsc --noEmit
+<span class="cmt"># 7.0 (fast, informational)</span>
+npx tsc --noEmit</code></pre>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">Step 2 — Let developers opt in for editing</h3>
+      <p>Have a few developers install the TypeScript Native Preview extension and use it day-to-day. The editor is where the speed is most felt, and it's low-risk because it doesn't change what's committed or shipped — only how fast the editor responds. Collect their feedback on any behaviour differences (recall a few LSP-related changes and the server-plugin gap from the Overview).</p>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">Step 3 — Validate side-by-side until results agree</h3>
+      <p>Use the techniques from Modules 2–4: run 6.0 and 7.0 on the same code and confirm they report the same errors. Reach the "clean and honest build" bar from Module 3 (6.0 clean with <code>stableTypeOrdering</code>, no <code>ignoreDeprecations</code>). When 7.0 consistently agrees with 6.0 across your CI history, it has earned trust.</p>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">Step 4 — Flip the default for type-checking</h3>
+      <p>Make 7.0 the authoritative type-check in CI and the default local <code>check</code> script. Keep 6.0 reachable (via the <code>tsc6</code> alias from Module 4) for tooling that still needs its API and as a fallback. At this point your team gets the fast feedback loop everywhere, while production emit can still go through whatever you trust.</p>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">Step 5 — Stage a monorepo, project by project</h3>
+      <p>In a monorepo, don't flip everything at once. Adopt leaf projects (few dependents) first, watch them through a release cycle, then move up the dependency graph. Use <code>--builders</code> (Module 2) once multiple projects are on 7.0 to parallelise the whole build. Gate any production-emit cutover on the stable GA release and your own test suite passing.</p>
+      <div class="note"><strong>Rule of thumb.</strong> Adopt fast feedback (editor, CI type-check) eagerly; adopt production emit conservatively. The first is reversible and low-stakes; the second is what actually ships to users.</div>
+    </div>
+
+    <details class="primer">
+      <summary>Refresh your knowledge?</summary>
+      <div class="primer-body">
+        <p><strong>What CI (continuous integration) is.</strong> A <strong>CI</strong> system automatically runs your checks — type-check, tests, lint — every time code is pushed, on a clean server rather than someone's laptop. It's the natural first place to pilot a new compiler because it's isolated (a failing experimental job needn't block anyone), reproducible (clean environment every run), and visible (everyone sees the results). Adding a 7.0 job next to your 6.0 job means real code gets checked by the new compiler continuously, with zero risk to what ships.</p>
+
+        <p><strong>Why "informational" jobs are the safe on-ramp.</strong> A CI job can be marked non-blocking (it reports results but doesn't fail the build). Running the 7.0 check this way lets you watch it against months of real commits and compare it to the trusted 6.0 job before you ever make it authoritative. Only once it consistently agrees do you promote it to blocking. This is the same parallel-change discipline as the package aliases in Module 4: introduce the new thing beside the old, prove equivalence, then switch.</p>
+
+        <p><strong>Reversibility as the deciding factor.</strong> A good rule for any migration: adopt the reversible things first. Switching your <em>editor</em> or an <em>informational CI check</em> to 7.0 can be undone in seconds and affects nobody downstream. Switching <em>production emit</em> ships bytes to users and is far harder to walk back. Sequencing adoption from most- to least-reversible is what keeps a rollout calm.</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- TAB: CAPSTONE LAB ===================================================== -->
+  <div class="tabpanel" id="tab-lab">
+    <div class="card">
+      <h3 style="margin-top:0">Goal</h3>
+      <p>Put the whole course together. Take a mid-size project (ideally a small monorepo) end to end: a clean 7.0 build, tuned parallelism, coexistence wired for tooling, the editor on the native preview, and a before/after benchmark to show for it. This is the exercise that earns the certification.</p>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">Step 1 — Honest 6.0 baseline (Module 3)</h3>
+      <p>Get the project building cleanly under 6.0 with no deprecated flags, then confirm the honest-build bar:</p>
+      <pre><code>node ./node_modules/typescript/bin/tsc --noEmit --stableTypeOrdering</code></pre>
+      <p>Fix any deprecation or strict errors first — this is where most migration effort actually lives.</p>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">Step 2 — Install and coexist (Modules 1 &amp; 4)</h3>
+      <p>Bring in 7.0 and wire the aliases so builds run 7.0 while tooling keeps the 6.0 API:</p>
+      <pre><code>{
+  "devDependencies": {
+    "typescript": "npm:@typescript/typescript6@^6.0.0",
+    "typescript-7": "npm:typescript@rc"
+  },
+  "scripts": {
+    "check": "tsc --noEmit",
+    "check:6": "tsc6 --noEmit",
+    "lint": "eslint ."
+  }
+}</code></pre>
+      <pre><code>rm -rf node_modules package-lock.json && npm install
+npx tsc --version    <span class="cmt"># 7.0</span>
+npx tsc6 --version   <span class="cmt"># 6.0</span></code></pre>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">Step 3 — Confirm 7.0 agrees, and benchmark (Module 2)</h3>
+      <pre><code><span class="cmt"># they should report the same errors</span>
+npm run check:6
+npm run check
+
+<span class="cmt"># benchmark (warm cache; second run)</span>
+npx tsc --noEmit --extendedDiagnostics --checkers 4</code></pre>
+      <p>Record the before (6.0) and after (7.0) <code>Total time</code>, and your speed-up ratio. For a monorepo, build in parallel and note the effect:</p>
+      <pre><code>npx tsc --build --builders 4</code></pre>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">Step 4 — Editor on the native preview (Module 5)</h3>
+      <p>Install the TypeScript Native Preview extension, enable it for the workspace, and confirm the editor essentials work on your code: completions, hover, go-to-definition, find-all-references, rename, auto-imports. Note anything that behaves differently (server plugins, any still-catching-up feature).</p>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">Step 5 — Produce a migration report</h3>
+      <p>Write up a short rollout report — the same artifact you'd hand a team lead. Include:</p>
+      <ul class="clean">
+        <li>The before/after benchmark numbers and your <code>--checkers</code> sweep.</li>
+        <li>Confirmation that 6.0 and 7.0 agree on errors (the honest-build check).</li>
+        <li>Any config changes the migration required (dropped flags, explicit defaults).</li>
+        <li>The coexistence setup (aliases) and which tooling depends on the 6.0 API.</li>
+        <li>Editor findings and any feature gaps relevant to your team.</li>
+        <li>A recommendation: what to adopt now (editor, CI type-check) vs. what to gate on stable GA (production emit).</li>
+      </ul>
+    </div>
+
+    <div class="cert-band">
+      <h3>You're ready for the certification</h3>
+      <p style="margin-bottom:0">Completing this capstone means you can install and run TypeScript 7, tune its parallelism, reconcile breaking changes, make it coexist with existing tooling, and stage a responsible rollout. Mark this module complete, then take the <strong>SF Certified TypeScript 7 Practitioner</strong> exam from the course dashboard.</p>
+    </div>
+
+    <details class="primer">
+      <summary>Refresh your knowledge?</summary>
+      <div class="primer-body">
+        <p><strong>What a migration checklist buys you.</strong> A migration is a sequence of small, verifiable changes — not a single leap. Writing the steps down as a checklist turns an intimidating "upgrade everything" into a series of done/not-done items, each independently checkable. It also makes the work reviewable by someone else and repeatable across other projects. Every step in this capstone maps to one earlier module, which is the point: the checklist <em>is</em> the course, applied.</p>
+
+        <p><strong>What goes in a good rollout report.</strong> A useful report answers three questions for a decision-maker: <em>Does it work?</em> (the honest-build check — 6.0 and 7.0 agree), <em>Is it worth it?</em> (the benchmark — your real speed-up, not the headline number), and <em>What's the risk?</em> (what's adopted reversibly now vs. gated on stable GA). Concrete numbers and an explicit now-vs-later recommendation are what turn "we tried the new compiler" into a decision a team can act on.</p>
+
+        <p><strong>Why "reversible now, risky later" is the through-line.</strong> Across the whole course, the safe pattern repeats: run the new beside the old, prove they agree, then switch — editor and CI type-check first (reversible, low-stakes), production emit last (gated on GA and your tests). If you remember one thing past the exam, let it be that sequencing. It's what makes adopting a brand-new compiler a calm, staged process rather than a gamble.</p>
+      </div>
+    </details>
+  </div>
+
+  <!-- TAB: CHECK YOUR KNOWLEDGE ============================================= -->
+  <div class="tabpanel" id="tab-check">
+    <div id="questionsWrap" class="card">
+      <div class="eyebrow">Check your knowledge</div>
+
+      <div class="q">
+        <div class="stem">Q1. What is the "language service," and why does the native port speed it up?</div>
+        <label class="opt"><input type="radio" name="q1" value="A">A separate cloud service; it's faster because of better servers.</label>
+        <label class="opt"><input type="radio" name="q1" value="B">The part of TypeScript powering editor features (completions, hover, go-to-definition); it runs on the same fast native foundation as the compiler.</label>
+        <label class="opt"><input type="radio" name="q1" value="C">A linter bundled with VS Code, unrelated to the compiler.</label>
+      </div>
+
+      <div class="q">
+        <div class="stem">Q2. What protocol does the TypeScript 7 editor integration use, and why does it matter?</div>
+        <label class="opt"><input type="radio" name="q2" value="A">The custom TSServer protocol, locking it to VS Code.</label>
+        <label class="opt"><input type="radio" name="q2" value="B">The Language Server Protocol (LSP), so the same language service can drive most modern editors, not just VS Code.</label>
+        <label class="opt"><input type="radio" name="q2" value="C">HTTP REST, requiring a network connection to work.</label>
+      </div>
+
+      <div class="q">
+        <div class="stem">Q3. Which statement best describes editor feature parity in the native preview?</div>
+        <label class="opt"><input type="radio" name="q3" value="A">Nothing works yet; the editor experience is purely experimental.</label>
+        <label class="opt"><input type="radio" name="q3" value="B">Core features (completions, hover, go-to-definition, find-all-references, rename, auto-imports) work for daily use; a few niceties and old server plugins are still catching up.</label>
+        <label class="opt"><input type="radio" name="q3" value="C">It is fully identical to the old extension with no differences at all.</label>
+      </div>
+
+      <div class="q">
+        <div class="stem">Q4. Why is CI the recommended first place to pilot TypeScript 7?</div>
+        <label class="opt"><input type="radio" name="q4" value="A">CI is the only place the native compiler can run.</label>
+        <label class="opt"><input type="radio" name="q4" value="B">An added, non-blocking 7.0 type-check job runs on real code continuously, in an isolated and reproducible environment, with zero risk to what ships.</label>
+        <label class="opt"><input type="radio" name="q4" value="C">CI automatically rewrites your code to be 7.0-compatible.</label>
+      </div>
+
+      <div class="q">
+        <div class="stem">Q5. What is the guiding principle for sequencing a TypeScript 7 rollout?</div>
+        <label class="opt"><input type="radio" name="q5" value="A">Switch production emit first, since it's the most important.</label>
+        <label class="opt"><input type="radio" name="q5" value="B">Adopt reversible, low-stakes things first (editor, informational CI type-check); gate production emit on stable GA and your tests passing.</label>
+        <label class="opt"><input type="radio" name="q5" value="C">Flip the entire monorepo at once to avoid partial states.</label>
+      </div>
+
+      <div class="q">
+        <div class="stem">Q6. In a monorepo, what is the recommended adoption order?</div>
+        <label class="opt"><input type="radio" name="q6" value="A">Start with the most depended-upon core project so everything inherits it immediately.</label>
+        <label class="opt"><input type="radio" name="q6" value="B">Adopt leaf projects (few dependents) first, watch them through a release cycle, then move up the dependency graph.</label>
+        <label class="opt"><input type="radio" name="q6" value="C">Order doesn't matter; convert projects alphabetically.</label>
+      </div>
+
+      <button class="submit-btn" id="submitAnswersBtn" disabled>Submit answers</button>
+      <div class="submit-note" id="submitNote">Select an answer for each question to submit.</div>
+    </div>
+
+    <div id="submittedWrap" class="card hidden">
+      <p>Answers submitted. Review complete — mark this module as complete below, then take the certification exam from the dashboard.</p>
+    </div>
+
+    <div class="complete-bar disabled" id="completeBar">
+      <input type="checkbox" id="completeCb" disabled>
+      <label for="completeCb" id="completeLabel">Answer all questions to unlock</label>
+      <button class="redo-btn" id="redoBtn">&#x21BA; Redo module</button>
+    </div>
+  </div>
+
+  <div class="nav-row">
+    <a class="nav-btn secondary" href="ts7-module-4-packaging-tooling.html">← Module 4</a>
+    <a class="nav-btn" href="course-map.html">Back to dashboard →</a>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script>
+const EXAMPLE_ID = 'ts7-module-5-editor-rollout';
+const QIDS = ['q1','q2','q3','q4','q5','q6'];
+const CORRECT = { q1:'B', q2:'B', q3:'B', q4:'B', q5:'B', q6:'B' };
+
+document.getElementById('tabbar').addEventListener('click', function(e){
+  const btn = e.target.closest('.tabbtn'); if(!btn) return;
+  const tab = btn.getAttribute('data-tab');
+  document.querySelectorAll('.tabbtn').forEach(function(b){ b.classList.toggle('active', b===btn); });
+  document.querySelectorAll('.tabpanel').forEach(function(p){ p.classList.toggle('active', p.id==='tab-'+tab); });
+  window.scrollTo({top:0,behavior:'smooth'});
+});
+
+const _FB_CONFIG = {
+  apiKey: "AIzaSyC-I-IOCq2fCwa471fsD5xOn6SYQSBDp7Q",
+  authDomain: "sfcertification-grafana.firebaseapp.com",
+  projectId: "sfcertification-grafana",
+  storageBucket: "sfcertification-grafana.firebasestorage.app",
+  messagingSenderId: "227322696511",
+  appId: "1:227322696511:web:12e7ced7dd3d45fa06798a"
+};
+if (!window._fbApp) window._fbApp = firebase.initializeApp(_FB_CONFIG);
+const _auth = firebase.auth(window._fbApp);
+window._learnerUid = 'anon'; window._learnerEmail = null;
+
+window.pmLearnerKey = function(exampleId){ return 'pm_learner_' + window._learnerUid + '_' + exampleId; };
+function loadState(){ try { return JSON.parse(localStorage.getItem(window.pmLearnerKey(EXAMPLE_ID))) || {}; } catch(e){ return {}; } }
+function saveState(s){ localStorage.setItem(window.pmLearnerKey(EXAMPLE_ID), JSON.stringify(s)); }
+
+window.pmSignOut = function(){ _auth.signOut(); };
+
+_auth.onAuthStateChanged(function(user){
+  if (user && user.email && user.email.endsWith('@sourcefuse.com')) {
+    window._learnerUid = user.uid; window._learnerEmail = user.email;
+    document.getElementById('userEmail').textContent = user.email;
+    document.dispatchEvent(new Event('learnerReady'));
+  } else if (user && user.email && !user.email.endsWith('@sourcefuse.com')) {
+    _auth.signOut();
+  } else {
+    window.location.href = 'course-map.html';
+  }
+});
+
+document.addEventListener('learnerReady', function() {
+  const state = loadState();
+  cpEnsureModuleStarted();
+
+  const completeCb = document.getElementById('completeCb');
+  if (completeCb) {
+    completeCb.addEventListener('change', function() {
+      if (!completeCb.checked) return;
+      const s = loadState(); s.complete = true; saveState(s);
+      activateCompleteBar(true);
+    });
+  }
+  const redoBtn = document.getElementById('redoBtn');
+  if (redoBtn) redoBtn.addEventListener('click', function() {
+    localStorage.removeItem(window.pmLearnerKey(EXAMPLE_ID));
+    document.getElementById('questionsWrap').classList.remove('hidden');
+    document.getElementById('submittedWrap').classList.add('hidden');
+    document.querySelectorAll('.opt input[type="radio"]').forEach(function(r){ r.checked = false; });
+    document.getElementById('submitAnswersBtn').disabled = true;
+    document.getElementById('submitNote').textContent = 'Select an answer for each question to submit.';
+    activateCompleteBar(false);
+  });
+
+  if (state.complete) { showSubmittedState(); activateCompleteBar(true); return; }
+  if (state.submittedAt) { showSubmittedState(); activateCompleteBar(false); return; }
+
+  document.querySelectorAll('.opt input[type="radio"]').forEach(function(radio){
+    radio.addEventListener('change', checkAllAnswered);
+  });
+  document.getElementById('submitAnswersBtn').addEventListener('click', submitAnswers);
+});
+
+function checkAllAnswered() {
+  const all = QIDS.every(n => document.querySelector('input[name="'+n+'"]:checked'));
+  document.getElementById('submitAnswersBtn').disabled = !all;
+  document.getElementById('submitNote').textContent = all ? 'Ready to submit.' : 'Select an answer for each question to submit.';
+}
+
+function submitAnswers() {
+  const answers = {};
+  QIDS.forEach(function(n){
+    const v = document.querySelector('input[name="'+n+'"]:checked'); if (v) answers[n] = v.value;
+  });
+  let correct = 0;
+  Object.keys(CORRECT).forEach(function(n){ if (answers[n] === CORRECT[n]) correct++; });
+  const s = loadState();
+  s.exampleId = EXAMPLE_ID; s.answers = answers; s.correct = correct;
+  s.submittedAt = new Date().toISOString();
+  saveState(s);
+  showSubmittedState();
+  activateCompleteBar(false);
+}
+
+function showSubmittedState() {
+  document.getElementById('questionsWrap').classList.add('hidden');
+  document.getElementById('submittedWrap').classList.remove('hidden');
+}
+
+function activateCompleteBar(isDone) {
+  const bar = document.getElementById('completeBar');
+  const cb = document.getElementById('completeCb');
+  const label = document.getElementById('completeLabel');
+  const redo = document.getElementById('redoBtn');
+  if (!bar) return;
+  if (isDone) {
+    bar.className = 'complete-bar done';
+    cb.disabled = true; cb.checked = true;
+    label.textContent = '✓ Module complete';
+    if (redo) redo.classList.add('visible');
+    cpWriteModuleComplete();
+  } else {
+    bar.className = 'complete-bar';
+    cb.disabled = false; cb.checked = false;
+    label.textContent = 'Mark module as complete';
+    if (redo) redo.classList.remove('visible');
+  }
+}
+</script>
+
+<!-- ===== SHARED courseProgress v2 wiring (inlined) ========================= -->
+<script>
+var CP_COURSE_ID = 'Nr2nA1nxBRaFA4fwzA36';
+var THIS_MODULE_KEY = EXAMPLE_ID;
+var CP_MODULE_IDS = [
+  'ts7-module-1-why-native-compiler',
+  'ts7-module-2-performance-parallelism',
+  'ts7-module-3-breaking-changes-defaults',
+  'ts7-module-4-packaging-tooling',
+  'ts7-module-5-editor-rollout'
+];
+
+function cpNow() {
+  var d = new Date();
+  var pad = function(n){ return String(n).padStart(2,'0'); };
+  return {
+    date: d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()),
+    time: pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds()),
+    ms:   d.getTime()
+  };
+}
+function cpFmtDuration(ms) {
+  if (ms == null || ms < 0) return null;
+  var s = Math.floor(ms/1000), h = Math.floor(s/3600), m = Math.floor((s%3600)/60), sec = s%60;
+  if (h > 0) return h+'h '+m+'m '+sec+'s';
+  if (m > 0) return m+'m '+sec+'s';
+  return sec+'s';
+}
+function cpDb() { return firebase.firestore(window._fbApp); }
+function cpDocRef() { return cpDb().collection('courseProgress').doc(window._learnerUid); }
+function cpReady() { return window._fbApp && window._learnerUid && window._learnerUid !== 'anon'; }
+
+/* Set module start once (call on page load / learnerReady). Never overwrites
+   an existing start. Also stamps courseStartedOn/At once for the whole course. */
+function cpEnsureModuleStarted() {
+  if (!cpReady()) return;
+  var ref = cpDocRef();
+  ref.get().then(function(snap){
+    var data = snap.exists ? (snap.data() || {}) : {};
+    var course = (data.courses && data.courses[CP_COURSE_ID]) || {};
+    var mods = course.modules || {};
+    var t = cpNow();
+    var update = { email: window._learnerEmail || null, name: window._learnerEmail || null, courses: {} };
+    update.courses[CP_COURSE_ID] = { moduleInProgress: THIS_MODULE_KEY, modules: {} };
+    if (!mods[THIS_MODULE_KEY] || !mods[THIS_MODULE_KEY].startedOn) {
+      update.courses[CP_COURSE_ID].modules[THIS_MODULE_KEY] = { startedOn: t.date, startedAt: t.time };
+    }
+    // Stamp course start once.
+    if (!course.courseStartedOn) { update.courses[CP_COURSE_ID].courseStartedOn = t.date; update.courses[CP_COURSE_ID].courseStartedAt = t.time; }
+    ref.set(update, { merge: true })
+       .catch(function(e){ console.warn('[courseProgress] start write failed:', e.message); });
+  }).catch(function(e){ console.warn('[courseProgress] start read failed:', e.message); });
+}
+
+/* On completion: write module completion + timeTaken; if all modules done,
+   close the course. Call from the "mark complete" handler. */
+function cpWriteModuleComplete() {
+  if (!cpReady()) return;
+  var ref = cpDocRef();
+  ref.get().then(function(snap){
+    var data = snap.exists ? (snap.data() || {}) : {};
+    var course = (data.courses && data.courses[CP_COURSE_ID]) || {};
+    var mods = course.modules || {};
+    var t = cpNow();
+    var startMs = null;
+    var mEntry = mods[THIS_MODULE_KEY];
+    if (mEntry && mEntry.startedOn && mEntry.startedAt) {
+      startMs = new Date(mEntry.startedOn + 'T' + mEntry.startedAt).getTime();
+    }
+    var moduleTimeTaken = startMs != null ? cpFmtDuration(t.ms - startMs) : null;
+
+    var courseUpdate = { modules: {} };
+    // Preserve an existing real completion; otherwise stamp now.
+    var existing = mods[THIS_MODULE_KEY] || {};
+    courseUpdate.modules[THIS_MODULE_KEY] = {
+      completedOn: existing.completedOn || t.date,
+      completedAt: existing.completedAt || t.time,
+      timeTaken:   existing.timeTaken   || moduleTimeTaken
+    };
+    if (course.moduleInProgress === THIS_MODULE_KEY) courseUpdate.moduleInProgress = null;
+
+    var completedCount = 0;
+    CP_MODULE_IDS.forEach(function(id){
+      if (id === THIS_MODULE_KEY) { completedCount++; return; }
+      if (mods[id] && mods[id].completedOn) completedCount++;
+    });
+    if (completedCount >= CP_MODULE_IDS.length && !course.courseCompletedOn) {
+      courseUpdate.courseCompletedOn = t.date;
+      courseUpdate.courseCompletedAt = t.time;
+      if (course.courseStartedOn && course.courseStartedAt) {
+        var cStart = new Date(course.courseStartedOn + 'T' + course.courseStartedAt).getTime();
+        courseUpdate.timeTaken = cpFmtDuration(t.ms - cStart);
+      }
+    }
+    var update = { email: window._learnerEmail || null, name: window._learnerEmail || null, courses: {} };
+    update.courses[CP_COURSE_ID] = courseUpdate;
+    ref.set(update, { merge: true })
+       .catch(function(e){ console.warn('[courseProgress] complete write failed:', e.message); });
+  }).catch(function(e){ console.warn('[courseProgress] complete read failed:', e.message); });
+}
+</script>
+</body>
+</html>
