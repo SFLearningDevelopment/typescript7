@@ -29,6 +29,19 @@
   .eyebrow{font-family:'Source Code Pro',monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--blue)}
   .tags{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
   .tag{font-family:'Source Code Pro',monospace;font-size:12px;background:#e3edf9;color:var(--blue-dark);padding:5px 10px;border-radius:14px}
+  /* Expandable concept panels — the three ideas of Module 1 */
+  .concepts{margin:18px 0}
+  .concept{border:1px solid var(--border);border-radius:12px;margin:10px 0;overflow:hidden;background:var(--card)}
+  .concept summary{cursor:pointer;padding:16px 18px;list-style:none;display:flex;align-items:center;gap:12px}
+  .concept summary::-webkit-details-marker{display:none}
+  .concept .chip{font-family:'Source Code Pro',monospace;font-size:12px;background:#e3edf9;color:var(--blue-dark);padding:5px 10px;border-radius:14px;white-space:nowrap}
+  .concept .headline{font-weight:600;color:var(--ink)}
+  .concept .toggle{margin-left:auto;font-family:'Source Code Pro',monospace;color:var(--blue);font-size:18px;line-height:1}
+  .concept[open] .toggle{transform:rotate(45deg)}
+  .concept .concept-body{padding:0 18px 18px}
+  .concept .concept-body p{margin:12px 0}
+  .concept .concept-body p:first-child{margin-top:4px}
+  .concept .concept-body p:last-child{margin-bottom:0}
   .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px;margin:18px 0}
   .card p{margin:0 0 12px}
   .card p:last-child{margin-bottom:0}
@@ -77,14 +90,46 @@
     <span class="tag">Go port</span>
   </div>
 
-  <div class="card">
-    <p>Most TypeScript releases add or refine type-system features. TypeScript 7 is different in kind: the language and its type-checking rules barely move, while the thing that runs them was replaced. Over roughly a year the team rebuilt the compiler and tooling in Go — an effort known as Project Corsa — and the result is often about 10× faster than TypeScript 6.0, with substantially lower memory use. When you adopt TypeScript 7, you are adopting a new engine, not a new dialect.</p>
+  <p style="color:var(--muted);margin:14px 0 4px">Most TypeScript releases add or refine type-system features. TypeScript 7 is different in kind: the language barely moves, while the thing that runs it was replaced. Three ideas explain what that means — open each one.</p>
 
-    <p>The most important word in that sentence is <em>port</em>, not <em>rewrite</em>. The team did not sit down to reimagine how type-checking should work. They methodically moved the existing implementation across to Go, keeping the type-checking logic structurally the same. That choice is the through-line of this whole course: because the checker was ported rather than reinvented, a program that type-checks cleanly under 6.0 produces the same results under 7.0. The errors you get, the inferences the compiler draws, the types it reports on hover — those are intended to be identical. What changes is how fast you get them, and a set of default settings we cover in Module 3.</p>
+  <div class="concepts">
 
-    <p>It is reasonable to ask why Go, rather than Rust or a WebAssembly build. The honest answer the team gave was pragmatic: Go's concurrency model and memory layout lined up well with how the existing compiler was already structured, which made a faithful port feasible in about a year. A ground-up rewrite in another language would have taken far longer and risked drifting away from the exact semantics teams depend on. Speed of porting — not squeezing out the last possible nanosecond — drove the decision.</p>
+    <details class="concept" open>
+      <summary>
+        <span class="chip">native compiler</span>
+        <span class="headline">A new engine, not a new dialect</span>
+        <span class="toggle">+</span>
+      </summary>
+      <div class="concept-body">
+        <p>When you adopt TypeScript 7, you are adopting a faster engine for the same language. The team rebuilt the compiler and tooling so they run as native code rather than as JavaScript, and the result is often about 10× faster than TypeScript 6.0, with substantially lower memory use.</p>
+        <p>This speed is not only a CI win. The same engine powers your editor: every hover, every "go to definition," every red squiggle is the type-checker working. On a large codebase that previously meant slow editor startup and laggy feedback. Native speed and shared-memory parallelism improve the command-line build and the editing experience at once — which is why teams piloting it reported both faster CI and a more fluid editor. How that speed is delivered is the subject of Module 2.</p>
+      </div>
+    </details>
 
-    <p>Why does a 10× compiler matter beyond bragging rights? Because the compiler does not only build your code in CI. The same engine powers your editor: every hover, every "go to definition," every red squiggle is the type-checker working. On a large codebase that previously meant slow editor startup and laggy feedback. Native speed and shared-memory parallelism attack both the command-line build and the editing experience at once, which is why teams piloting it reported both faster CI and a more fluid editor. The rest of this course unpacks how that speed is delivered (Module 2), what defaults you must reconcile (Module 3), how the packaging and tooling transition works (Module 4), and how to actually roll it out (Module 5).</p>
+    <details class="concept">
+      <summary>
+        <span class="chip">Project Corsa</span>
+        <span class="headline">A port, not a rewrite</span>
+        <span class="toggle">+</span>
+      </summary>
+      <div class="concept-body">
+        <p>"Project Corsa" is the name of the year-long effort to move the compiler to its new foundation. The most important word is <em>port</em>, not <em>rewrite</em>. The team did not reimagine how type-checking should work; they methodically moved the existing implementation across, keeping the type-checking logic structurally the same.</p>
+        <p>That choice is the through-line of this whole course. Because the checker was ported rather than reinvented, a program that type-checks cleanly under 6.0 produces the same results under 7.0. The errors you get, the inferences the compiler draws, the types it reports on hover — those are intended to be identical. What changes is how fast you get them, and a set of default settings covered in Module 3.</p>
+      </div>
+    </details>
+
+    <details class="concept">
+      <summary>
+        <span class="chip">Go port</span>
+        <span class="headline">Why Go, and not Rust or WebAssembly</span>
+        <span class="toggle">+</span>
+      </summary>
+      <div class="concept-body">
+        <p>The new compiler is written in Go. It is reasonable to ask why Go, rather than Rust or a WebAssembly build. The honest answer the team gave was pragmatic: Go's concurrency model and memory layout lined up well with how the existing compiler was already structured, which made a faithful port feasible in about a year.</p>
+        <p>A ground-up rewrite in another language would have taken far longer and risked drifting away from the exact semantics teams depend on. Speed of porting — not squeezing out the last possible nanosecond — drove the decision. The pay-off is a compiler that is dramatically faster while still behaving like the one you already know.</p>
+      </div>
+    </details>
+
   </div>
 
   <details class="primer">
