@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<!-- ============================================================================
+     SF KNOWLEDGE HUB — TypeScript 7 — MODULE 1
+     Why TypeScript 7 Exists (the native compiler)
+     moduleKey (EXAMPLE_ID): ts7-module-1-why-native-compiler
+     courseId  (CP_COURSE_ID): Nr2nA1nxBRaFA4fwzA36
+     Completion gated on the "Mark module as complete" checkbox (complete===true).
+     ============================================================================ -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 1 — Why TypeScript 7 Exists — TypeScript 7</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Source+Code+Pro:wght@400;600&family=Source+Serif+4:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue:#1a6eb5; --blue-dark:#0f4c81; --ink:#1f2933; --muted:#647687;
+    --bg:#eef2f8; --card:#ffffff; --border:#d6e0ee; --green:#16a34a; --coral:#c0392b;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'Source Sans 3',system-ui,sans-serif;color:var(--ink);background:var(--bg);line-height:1.6}
+  .userbar{display:flex;justify-content:space-between;align-items:center;padding:12px 24px;background:var(--card);border-bottom:1px solid var(--border);font-size:14px}
+  .signout{padding:8px 16px;border:none;border-radius:6px;background:var(--blue);color:#fff;cursor:pointer;font-family:inherit}
+  .crumbs{padding:14px 24px;color:var(--muted);font-size:13px}
+  .crumbs a{color:var(--blue);text-decoration:none}
+  .wrap{max-width:860px;margin:0 auto;padding:8px 24px 80px}
+  h1{font-family:'Source Serif 4',Georgia,serif;font-size:30px;margin:8px 0 4px}
+  h3{font-family:'Source Serif 4',Georgia,serif;font-size:19px;margin:22px 0 6px}
+  .eyebrow{font-family:'Source Code Pro',monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--blue)}
+  .tags{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+  .tag{font-family:'Source Code Pro',monospace;font-size:12px;background:#e3edf9;color:var(--blue-dark);padding:5px 10px;border-radius:14px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px;margin:18px 0}
+  .card p{margin:0 0 12px}
+  .card p:last-child{margin-bottom:0}
+  code{font-family:'Source Code Pro',monospace;font-size:.92em;background:#eef3f9;padding:2px 6px;border-radius:5px}
+  .primer{border:1px solid var(--border);border-radius:12px;margin:18px 0;overflow:hidden}
+  .primer summary{cursor:pointer;padding:14px 18px;background:#f4f8fd;font-weight:600;color:var(--blue-dark);list-style:none}
+  .primer summary::-webkit-details-marker{display:none}
+  .primer summary::before{content:'+ ';font-family:'Source Code Pro',monospace}
+  .primer[open] summary::before{content:'– '}
+  .primer .primer-body{padding:0 18px 16px}
+  .primer .primer-body p{margin:12px 0}
+  .q{margin:16px 0}
+  .q .stem{font-weight:600;margin-bottom:8px}
+  .opt{display:block;border:1px solid var(--border);border-radius:8px;padding:12px 14px;margin:8px 0;cursor:pointer}
+  .opt input{margin-right:10px}
+  .submit-btn{padding:11px 20px;border:none;border-radius:8px;background:var(--blue);color:#fff;font-family:inherit;font-size:15px;cursor:pointer}
+  .submit-btn:disabled{background:#c3d3e6;cursor:not-allowed}
+  .submit-note{font-family:'Source Code Pro',monospace;font-size:13px;color:var(--muted);margin-top:8px}
+  .hidden{display:none}
+  .complete-bar{display:flex;align-items:center;gap:12px;border-top:1px solid var(--border);margin-top:22px;padding-top:18px}
+  .complete-bar.disabled{opacity:.5}
+  .complete-bar .redo-btn{margin-left:auto;display:none;border:1px solid var(--border);background:#fff;border-radius:8px;padding:8px 14px;cursor:pointer;font-family:inherit}
+  .complete-bar .redo-btn.visible{display:inline-block}
+  .complete-bar.done{color:var(--green)}
+  .nav-row{display:flex;justify-content:space-between;margin-top:30px}
+  .nav-btn{padding:12px 18px;border-radius:8px;background:var(--blue);color:#fff;text-decoration:none;font-weight:600}
+  .nav-btn.secondary{background:#fff;color:var(--blue);border:1px solid var(--border)}
+</style>
+</head>
+<body>
+
+<div class="userbar">
+  <span>Welcome, <span id="userEmail">…</span></span>
+  <button class="signout" onclick="pmSignOut()">Sign out</button>
+</div>
+<div class="crumbs">
+  <a href="course-map.html">Back to course dashboard</a> / Module 1 / Why TypeScript 7 Exists
+</div>
+
+<div class="wrap">
+  <div class="eyebrow">Module 1</div>
+  <h1>Why TypeScript 7 Exists</h1>
+  <div class="tags">
+    <span class="tag">native compiler</span>
+    <span class="tag">Project Corsa</span>
+    <span class="tag">Go port</span>
+  </div>
+
+  <div class="card">
+    <p>Most TypeScript releases add or refine type-system features. TypeScript 7 is different in kind: the language and its type-checking rules barely move, while the thing that runs them was replaced. Over roughly a year the team rebuilt the compiler and tooling in Go — an effort known as Project Corsa — and the result is often about 10× faster than TypeScript 6.0, with substantially lower memory use. When you adopt TypeScript 7, you are adopting a new engine, not a new dialect.</p>
+
+    <p>The most important word in that sentence is <em>port</em>, not <em>rewrite</em>. The team did not sit down to reimagine how type-checking should work. They methodically moved the existing implementation across to Go, keeping the type-checking logic structurally the same. That choice is the through-line of this whole course: because the checker was ported rather than reinvented, a program that type-checks cleanly under 6.0 produces the same results under 7.0. The errors you get, the inferences the compiler draws, the types it reports on hover — those are intended to be identical. What changes is how fast you get them, and a set of default settings we cover in Module 3.</p>
+
+    <p>It is reasonable to ask why Go, rather than Rust or a WebAssembly build. The honest answer the team gave was pragmatic: Go's concurrency model and memory layout lined up well with how the existing compiler was already structured, which made a faithful port feasible in about a year. A ground-up rewrite in another language would have taken far longer and risked drifting away from the exact semantics teams depend on. Speed of porting — not squeezing out the last possible nanosecond — drove the decision.</p>
+
+    <p>Why does a 10× compiler matter beyond bragging rights? Because the compiler does not only build your code in CI. The same engine powers your editor: every hover, every "go to definition," every red squiggle is the type-checker working. On a large codebase that previously meant slow editor startup and laggy feedback. Native speed and shared-memory parallelism attack both the command-line build and the editing experience at once, which is why teams piloting it reported both faster CI and a more fluid editor. The rest of this course unpacks how that speed is delivered (Module 2), what defaults you must reconcile (Module 3), how the packaging and tooling transition works (Module 4), and how to actually roll it out (Module 5).</p>
+  </div>
+
+  <details class="primer">
+    <summary>Refresh your knowledge?</summary>
+    <div class="primer-body">
+      <p><strong>What does a TypeScript compiler actually do?</strong> If "the compiler was ported" is to mean anything, it helps to know what the compiler's job is. Three stages matter here.</p>
+      <p><strong>1. Parse.</strong> The compiler reads your <code>.ts</code> source text and turns it into a structured tree (an abstract syntax tree, or AST) that represents the code's shape — which things are functions, calls, types, and so on. This is purely about understanding structure; no type rules are applied yet.</p>
+      <p><strong>2. Type-check.</strong> The compiler walks that tree and applies TypeScript's type rules: it infers types where you did not write them, checks that the types you did write are consistent, and produces the errors you see. This stage is the heart of "TypeScript" as a value-add over plain JavaScript — and it is the stage the team deliberately kept structurally identical when porting to Go.</p>
+      <p><strong>3. Emit.</strong> The compiler strips the types away and writes out plain JavaScript that any runtime can execute, optionally with declaration files (<code>.d.ts</code>) describing your public types. TypeScript's types do not exist at runtime; emit is where they are erased.</p>
+      <p>Holding these three stages in mind makes the central claim of TypeScript 7 precise: the <em>type-check</em> stage behaves the same as before, the <em>emit</em> produces the same JavaScript, and what the Go port changed is how fast all three run and how much they parallelise. You can verify this yourself: compile a project with both compilers and diff the emitted JavaScript — it should match.</p>
+    </div>
+  </details>
+
+  <div id="questionsWrap" class="card">
+    <div class="eyebrow">Check your understanding</div>
+
+    <div class="q">
+      <div class="stem">Q1. What is the primary change introduced by TypeScript 7?</div>
+      <label class="opt"><input type="radio" name="q1" value="A">The compiler and tooling were rewritten in Go for roughly 10× faster builds, while type-checking behaviour is preserved.</label>
+      <label class="opt"><input type="radio" name="q1" value="B">A large set of new type-system features and syntax were added to the language.</label>
+      <label class="opt"><input type="radio" name="q1" value="C">TypeScript stopped compiling to JavaScript and now runs its own bytecode at runtime.</label>
+    </div>
+    <div class="q">
+      <div class="stem">Q2. The team describes the Go effort as a "port, not a rewrite." Why does that distinction matter to you as a developer?</div>
+      <label class="opt"><input type="radio" name="q2" value="A">It means the editor extension is optional and you only get speed in CI.</label>
+      <label class="opt"><input type="radio" name="q2" value="B">Because the type-checking logic was kept structurally identical, a project that checks cleanly under 6.0 should produce the same results under 7.0.</label>
+      <label class="opt"><input type="radio" name="q2" value="C">It means your existing TypeScript source must be manually rewritten in Go.</label>
+    </div>
+    <div class="q">
+      <div class="stem">Q3. Why does a faster compiler improve the editing experience, not just CI build times?</div>
+      <label class="opt"><input type="radio" name="q3" value="A">The editor uses a separate, unrelated engine that was sped up independently.</label>
+      <label class="opt"><input type="radio" name="q3" value="B">Faster CI indirectly frees up the editor by reducing background network traffic.</label>
+      <label class="opt"><input type="radio" name="q3" value="C">The same type-checker that builds your code also powers editor features like hover, go-to-definition, and error reporting, so speeding it up speeds up both.</label>
+    </div>
+
+    <button class="submit-btn" id="submitAnswersBtn" disabled>Submit answers</button>
+    <div class="submit-note" id="submitNote">Select an answer for each question to submit.</div>
+  </div>
+
+  <div id="submittedWrap" class="card hidden">
+    <p>Answers submitted. Review complete — mark this module as complete below.</p>
+  </div>
+
+  <div class="complete-bar disabled" id="completeBar">
+    <input type="checkbox" id="completeCb" disabled>
+    <label for="completeCb" id="completeLabel">Answer all questions to unlock</label>
+    <button class="redo-btn" id="redoBtn">&#x21BA; Redo module</button>
+  </div>
+
+  <div class="nav-row">
+    <a class="nav-btn secondary" href="course-map.html">← Course map</a>
+    <a class="nav-btn" href="ts7-module-2-performance-parallelism.html">Module 2: Performance &amp; Parallelism →</a>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script>
+/* ===== IDENTIFIERS — set at creation ====================================== */
+const EXAMPLE_ID = 'ts7-module-1-why-native-compiler';   // = filename minus .html
+const CORRECT = { q1:'A', q2:'B', q3:'C' };               // answer key (for scoring/exam, not gating)
+
+/* ===== Firebase init ====================================================== */
+const _FB_CONFIG = {
+  apiKey: "AIzaSyC-I-IOCq2fCwa471fsD5xOn6SYQSBDp7Q",
+  authDomain: "sfcertification-grafana.firebaseapp.com",
+  projectId: "sfcertification-grafana",
+  storageBucket: "sfcertification-grafana.firebasestorage.app",
+  messagingSenderId: "227322696511",
+  appId: "1:227322696511:web:12e7ced7dd3d45fa06798a"
+};
+if (!window._fbApp) window._fbApp = firebase.initializeApp(_FB_CONFIG);
+const _auth = firebase.auth(window._fbApp);
+window._learnerUid = 'anon'; window._learnerEmail = null;
+
+window.pmLearnerKey = function(exampleId){ return 'pm_learner_' + window._learnerUid + '_' + exampleId; };
+function loadState(){ try { return JSON.parse(localStorage.getItem(window.pmLearnerKey(EXAMPLE_ID))) || {}; } catch(e){ return {}; } }
+function saveState(s){ localStorage.setItem(window.pmLearnerKey(EXAMPLE_ID), JSON.stringify(s)); }
+
+window.pmSignOut = function(){ _auth.signOut(); };
+
+_auth.onAuthStateChanged(function(user){
+  if (user && user.email && user.email.endsWith('@sourcefuse.com')) {
+    window._learnerUid = user.uid; window._learnerEmail = user.email;
+    document.getElementById('userEmail').textContent = user.email;
+    document.dispatchEvent(new Event('learnerReady'));
+  } else if (user && user.email && !user.email.endsWith('@sourcefuse.com')) {
+    _auth.signOut();
+  } else {
+    window.location.href = 'course-map.html';
+  }
+});
+
+document.addEventListener('learnerReady', function() {
+  const state = loadState();
+  cpEnsureModuleStarted();
+
+  const completeCb = document.getElementById('completeCb');
+  if (completeCb) {
+    completeCb.addEventListener('change', function() {
+      if (!completeCb.checked) return;
+      const s = loadState(); s.complete = true; saveState(s);
+      activateCompleteBar(true);
+    });
+  }
+  const redoBtn = document.getElementById('redoBtn');
+  if (redoBtn) redoBtn.addEventListener('click', function() {
+    localStorage.removeItem(window.pmLearnerKey(EXAMPLE_ID));
+    document.getElementById('questionsWrap').classList.remove('hidden');
+    document.getElementById('submittedWrap').classList.add('hidden');
+    document.querySelectorAll('.opt input[type="radio"]').forEach(function(r){ r.checked = false; });
+    document.getElementById('submitAnswersBtn').disabled = true;
+    document.getElementById('submitNote').textContent = 'Select an answer for each question to submit.';
+    activateCompleteBar(false);
+  });
+
+  if (state.complete) { showSubmittedState(); activateCompleteBar(true); return; }
+  if (state.submittedAt) { showSubmittedState(); activateCompleteBar(false); return; }
+
+  document.querySelectorAll('.opt input[type="radio"]').forEach(function(radio){
+    radio.addEventListener('change', checkAllAnswered);
+  });
+  document.getElementById('submitAnswersBtn').addEventListener('click', submitAnswers);
+});
+
+function checkAllAnswered() {
+  const all = ['q1','q2','q3'].every(n => document.querySelector('input[name="'+n+'"]:checked'));
+  document.getElementById('submitAnswersBtn').disabled = !all;
+  document.getElementById('submitNote').textContent = all ? 'Ready to submit.' : 'Select an answer for each question to submit.';
+}
+
+function submitAnswers() {
+  const answers = {};
+  ['q1','q2','q3'].forEach(function(n){
+    const v = document.querySelector('input[name="'+n+'"]:checked'); if (v) answers[n] = v.value;
+  });
+  let correct = 0;
+  Object.keys(CORRECT).forEach(function(n){ if (answers[n] === CORRECT[n]) correct++; });
+  const s = loadState();
+  s.exampleId = EXAMPLE_ID; s.answers = answers; s.correct = correct;
+  s.submittedAt = new Date().toISOString();
+  saveState(s);
+  showSubmittedState();
+  activateCompleteBar(false);
+}
+
+function showSubmittedState() {
+  document.getElementById('questionsWrap').classList.add('hidden');
+  document.getElementById('submittedWrap').classList.remove('hidden');
+}
+
+function activateCompleteBar(isDone) {
+  const bar = document.getElementById('completeBar');
+  const cb = document.getElementById('completeCb');
+  const label = document.getElementById('completeLabel');
+  const redo = document.getElementById('redoBtn');
+  if (!bar) return;
+  if (isDone) {
+    bar.className = 'complete-bar done';
+    cb.disabled = true; cb.checked = true;
+    label.textContent = '✓ Module complete';
+    if (redo) redo.classList.add('visible');
+    cpWriteModuleComplete();
+  } else {
+    bar.className = 'complete-bar';
+    cb.disabled = false; cb.checked = false;
+    label.textContent = 'Mark module as complete';
+    if (redo) redo.classList.remove('visible');
+  }
+}
+</script>
+
+<!-- ===== SHARED courseProgress v2 wiring (inlined) ========================= -->
+<script>
+var CP_COURSE_ID = 'Nr2nA1nxBRaFA4fwzA36';
+var THIS_MODULE_KEY = EXAMPLE_ID;
+var CP_MODULE_IDS = [
+  'ts7-module-1-why-native-compiler',
+  'ts7-module-2-performance-parallelism',
+  'ts7-module-3-breaking-changes-defaults',
+  'ts7-module-4-packaging-tooling',
+  'ts7-module-5-editor-rollout'
+];
+
+function cpNow() {
+  var d = new Date();
+  var pad = function(n){ return String(n).padStart(2,'0'); };
+  return {
+    date: d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()),
+    time: pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds()),
+    ms:   d.getTime()
+  };
+}
+function cpFmtDuration(ms) {
+  if (ms == null || ms < 0) return null;
+  var s = Math.floor(ms/1000), h = Math.floor(s/3600), m = Math.floor((s%3600)/60), sec = s%60;
+  if (h > 0) return h+'h '+m+'m '+sec+'s';
+  if (m > 0) return m+'m '+sec+'s';
+  return sec+'s';
+}
+function cpDb() { return firebase.firestore(window._fbApp); }
+function cpDocRef() { return cpDb().collection('courseProgress').doc(window._learnerUid); }
+function cpReady() { return window._fbApp && window._learnerUid && window._learnerUid !== 'anon'; }
+
+/* Set module start once (call on page load / learnerReady). Never overwrites
+   an existing start. Also stamps courseStartedOn/At once for the whole course. */
+function cpEnsureModuleStarted() {
+  if (!cpReady()) return;
+  var ref = cpDocRef();
+  ref.get().then(function(snap){
+    var data = snap.exists ? (snap.data() || {}) : {};
+    var course = (data.courses && data.courses[CP_COURSE_ID]) || {};
+    var mods = course.modules || {};
+    var t = cpNow();
+    var update = { email: window._learnerEmail || null, name: window._learnerEmail || null, courses: {} };
+    update.courses[CP_COURSE_ID] = { moduleInProgress: THIS_MODULE_KEY, modules: {} };
+    if (!mods[THIS_MODULE_KEY] || !mods[THIS_MODULE_KEY].startedOn) {
+      update.courses[CP_COURSE_ID].modules[THIS_MODULE_KEY] = { startedOn: t.date, startedAt: t.time };
+    }
+    // Stamp course start once.
+    if (!course.courseStartedOn) { update.courses[CP_COURSE_ID].courseStartedOn = t.date; update.courses[CP_COURSE_ID].courseStartedAt = t.time; }
+    ref.set(update, { merge: true })
+       .catch(function(e){ console.warn('[courseProgress] start write failed:', e.message); });
+  }).catch(function(e){ console.warn('[courseProgress] start read failed:', e.message); });
+}
+
+/* On completion: write module completion + timeTaken; if all modules done,
+   close the course. Call from the "mark complete" handler. */
+function cpWriteModuleComplete() {
+  if (!cpReady()) return;
+  var ref = cpDocRef();
+  ref.get().then(function(snap){
+    var data = snap.exists ? (snap.data() || {}) : {};
+    var course = (data.courses && data.courses[CP_COURSE_ID]) || {};
+    var mods = course.modules || {};
+    var t = cpNow();
+    var startMs = null;
+    var mEntry = mods[THIS_MODULE_KEY];
+    if (mEntry && mEntry.startedOn && mEntry.startedAt) {
+      startMs = new Date(mEntry.startedOn + 'T' + mEntry.startedAt).getTime();
+    }
+    var moduleTimeTaken = startMs != null ? cpFmtDuration(t.ms - startMs) : null;
+
+    var courseUpdate = { modules: {} };
+    // Preserve an existing real completion; otherwise stamp now.
+    var existing = mods[THIS_MODULE_KEY] || {};
+    courseUpdate.modules[THIS_MODULE_KEY] = {
+      completedOn: existing.completedOn || t.date,
+      completedAt: existing.completedAt || t.time,
+      timeTaken:   existing.timeTaken   || moduleTimeTaken
+    };
+    if (course.moduleInProgress === THIS_MODULE_KEY) courseUpdate.moduleInProgress = null;
+
+    var completedCount = 0;
+    CP_MODULE_IDS.forEach(function(id){
+      if (id === THIS_MODULE_KEY) { completedCount++; return; }
+      if (mods[id] && mods[id].completedOn) completedCount++;
+    });
+    if (completedCount >= CP_MODULE_IDS.length && !course.courseCompletedOn) {
+      courseUpdate.courseCompletedOn = t.date;
+      courseUpdate.courseCompletedAt = t.time;
+      if (course.courseStartedOn && course.courseStartedAt) {
+        var cStart = new Date(course.courseStartedOn + 'T' + course.courseStartedAt).getTime();
+        courseUpdate.timeTaken = cpFmtDuration(t.ms - cStart);
+      }
+    }
+    var update = { email: window._learnerEmail || null, name: window._learnerEmail || null, courses: {} };
+    update.courses[CP_COURSE_ID] = courseUpdate;
+    ref.set(update, { merge: true })
+       .catch(function(e){ console.warn('[courseProgress] complete write failed:', e.message); });
+  }).catch(function(e){ console.warn('[courseProgress] complete read failed:', e.message); });
+}
+</script>
+</body>
+</html>
