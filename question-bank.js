@@ -1,3 +1,4 @@
+/* build: 2026063001 */
 /* ============================================================================
    SF KNOWLEDGE HUB — TypeScript 7 — CERTIFICATION QUESTION BANK
    Exposes window.QUESTION_BANK, consumed by certification-test.html.
