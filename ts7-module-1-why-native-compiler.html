@@ -215,6 +215,19 @@ npx tsc --version
 npx tsgo --version</code></pre>
       <p>For the editor, install the <strong>TypeScript Native Preview</strong> extension from the VS Code Marketplace. It updates frequently and brings the same native speed to hovers, go-to-definition, and error reporting. (We cover the editor story in depth in Module 5.)</p>
     </div>
+
+    <details class="primer">
+      <summary>Refresh your knowledge?</summary>
+      <div class="primer-body">
+        <p><strong>Node.js, npm, and npx — what each one is.</strong> <strong>Node.js</strong> is the runtime that executes JavaScript outside a browser; it's what runs the compiler's binary on your machine. <strong>npm</strong> is the package manager bundled with Node — it installs packages listed in your project and records them in <code>package.json</code>. <strong>npx</strong> runs a command from a package without a separate global install, preferring the project-local copy in <code>node_modules/.bin</code>. That's why <code>npx tsc</code> reliably runs <em>this project's</em> compiler rather than whatever happens to be installed globally.</p>
+
+        <p><strong>Global vs. dev install.</strong> <code>npm install -g</code> puts a package on your whole machine (handy for a CLI you use everywhere); <code>npm install -D</code> (short for <code>--save-dev</code>) puts it in the current project as a development dependency, recorded under <code>devDependencies</code> in <code>package.json</code>. Per-project installs are usually preferable: they pin the exact version your project expects, so teammates and CI all build with the same compiler.</p>
+
+        <p><strong>Managing Node versions.</strong> The native compiler needs Node 16.20.0 or newer. If you juggle projects on different Node versions, a version manager such as <strong>nvm</strong> lets you switch: <code>nvm install 22</code> then <code>nvm use 22</code>. Checking <code>node -v</code> before installing saves a class of confusing errors that are really just an out-of-date runtime.</p>
+
+        <p><strong>Node's own TypeScript switches — and why they aren't a type-checker.</strong> Recent Node versions can run <code>.ts</code> files directly via <em>type stripping</em>: they erase the type annotations and execute the remaining JavaScript. Related runtime flags you may encounter: <code>--experimental-strip-types</code> (erase types and run; default-on in current Node), <code>--experimental-transform-types</code> (also transform non-erasable syntax like <code>enum</code> and parameter properties), and <code>--no-experimental-strip-types</code> (turn the behaviour off). The crucial point: <strong>type stripping does not check your types</strong> — it removes them. It will happily run code that has type errors. The TypeScript 7 compiler is what actually validates types. The two are complementary: Node's stripping is about <em>executing</em> TypeScript quickly; the compiler is about <em>verifying</em> it. This course is about the compiler.</p>
+      </div>
+    </details>
   </div>
 
   <!-- TAB: USE ============================================================== -->
@@ -254,6 +267,24 @@ npx tsc -w</code></pre>
 }</code></pre>
       <p>Because the native compiler honours all your existing <code>tsconfig.json</code> options and project references with no config changes, the only thing that changes in day-to-day use is the speed.</p>
     </div>
+
+    <details class="primer">
+      <summary>Refresh your knowledge?</summary>
+      <div class="primer-body">
+        <p><strong>package.json — the project's manifest.</strong> This file at the project root describes your project to npm: its name and version, its dependencies, and its <code>scripts</code>. The <code>scripts</code> block is what you run with <code>npm run &lt;name&gt;</code> — for example a <code>"check": "tsc --noEmit"</code> entry lets the whole team type-check the same way with one command. Dependencies split into <code>dependencies</code> (needed at runtime in production) and <code>devDependencies</code> (needed only while developing or building — the compiler belongs here, since types are erased before production runs).</p>
+
+        <p><strong>tsconfig.json — the compiler's settings.</strong> This file tells the TypeScript compiler how to treat your project: which files to include, what to emit, and how strict to be. The native compiler reads it unchanged. The options most relevant to this module:</p>
+        <p>• <code>noEmit</code> — type-check only, write no output (the fast feedback loop).<br>
+        • <code>outDir</code> — where compiled JavaScript is written.<br>
+        • <code>target</code> — the JavaScript version to emit (e.g. <code>es2022</code>).<br>
+        • <code>module</code> — the module system for output (e.g. <code>esnext</code>, <code>nodenext</code>).<br>
+        • <code>strict</code> — turns on the full family of strict type-checking checks (covered in Module 3).<br>
+        • <code>declaration</code> — also emit <code>.d.ts</code> type-definition files (one of the build features still being completed in the preview).<br>
+        • <code>references</code> — lists other TypeScript projects this one depends on, for monorepo/project-reference builds (the subject of Module 2's <code>--builders</code>).</p>
+
+        <p><strong>How npx finds the right binary.</strong> When you run <code>npx tsc</code>, npx looks first in the project's <code>node_modules/.bin</code> — so it runs the compiler version your <code>package.json</code> pinned, not a global one. This is why committing your dev dependency and using <code>npx</code> (or an npm script) gives every machine the same compiler. Running a bare <code>tsc</code> with no local install would fall back to whatever is global, which is the usual cause of "works on my machine" version drift.</p>
+      </div>
+    </details>
   </div>
 
   <!-- TAB: SIDE-BY-SIDE ===================================================== -->
@@ -294,6 +325,19 @@ npm install -D @typescript/native-preview</code></pre>
 npm install -D @typescript/typescript6</code></pre>
       <div class="note warn"><strong>Heads-up.</strong> If a dependency quietly pulls in an older <code>typescript</code> version, you can get confusing duplicate-version errors. If that happens, find the offending package (inspect <code>package-lock.json</code>), and reinstall cleanly. Module 4 goes deeper on the packaging and tooling transition.</div>
     </div>
+
+    <details class="primer">
+      <summary>Refresh your knowledge?</summary>
+      <div class="primer-body">
+        <p><strong>What "TypeScript 6.0" means here, and why it's the reference point.</strong> Throughout this course, 6.0 is the baseline the native compiler is measured against — both for speed ("about 10× faster than 6.0") and for correctness ("produces the same results as 6.0"). When you run the two side by side, 6.0 is the trusted answer key. Knowing a few things about it makes the comparison meaningful.</p>
+
+        <p><strong>The <code>typescript</code> package and the <code>tsc</code> binary.</strong> The classic compiler is published on npm as <code>typescript</code>, and its command-line tool is <code>tsc</code>. This is the compiler your project almost certainly uses today. The native preview deliberately ships under a <em>different</em> package name precisely so it can sit beside this one — at stable release, the native compiler takes over the <code>typescript</code> package and the <code>tsc</code> name.</p>
+
+        <p><strong>The programmatic API (Strada) and why tooling depends on it.</strong> Beyond the command line, the classic compiler exposes a JavaScript API that other tools call into — to parse code, inspect types, and walk the syntax tree. Linters (typescript-eslint), formatters, and many editor plugins are built on this API. The native compiler's codebase is informally called "Corsa," and the classic JS-based one "Strada." The native programmatic API is still being designed and won't be stable until 7.1 or later — which is the entire reason the <code>@typescript/typescript6</code> compatibility package exists: it keeps the 6.0-era API available for tools that need it while you adopt the native compiler for type-checking.</p>
+
+        <p><strong>6.0's deprecations and changed defaults.</strong> TypeScript 6.0 introduced a set of deprecations and new default settings — for example moving away from older module-resolution modes. These are gentle warnings in 6.0, but TypeScript 7 promotes many of them to hard errors and adopts the new defaults outright. That's why a project that's clean and warning-free under 6.0 transitions most smoothly. The full list and how to reconcile it is the subject of Module 3.</p>
+      </div>
+    </details>
   </div>
 
   <!-- TAB: CHECK YOUR KNOWLEDGE ============================================= -->
